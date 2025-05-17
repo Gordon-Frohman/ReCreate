@@ -2,11 +2,15 @@ package su.sergiusonesimus.recreate.content.contraptions.relays.elementary.shaft
 
 import org.lwjgl.opengl.GL11;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.texture.TextureMap;
 import su.sergiusonesimus.recreate.AllModelTextures;
 import su.sergiusonesimus.recreate.util.Direction.Axis;
 import su.sergiusonesimus.recreate.util.Direction.AxisDirection;
+import su.sergiusonesimus.recreate.zmixin.interfaces.IMixinTexturedQuad;
 
 public class ShaftModel extends ModelBase {
 
@@ -68,8 +72,23 @@ public class ShaftModel extends ModelBase {
     
     public void render() {
         AllModelTextures.SHAFT.bind();
-        //GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
     	shaft.render(0.0625F);
+    }
+    
+    public void renderDamageTexture(int progress) {
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        
+        float alpha = (progress + 1) / 10.0F; // 0.1-1.0
+        GL11.glColor4f(1, 1, 1, alpha);
+        
+        Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
+        ((IMixinTexturedQuad)((ModelBox)shaft.cubeList.get(0)).quadList[0]).setDestructionPhase(progress);
+    	shaft.render(0.0625F);
+        ((IMixinTexturedQuad)((ModelBox)shaft.cubeList.get(0)).quadList[0]).setDestructionPhase(-1);
+
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glColor4f(1, 1, 1, 1);
     }
 
 }
