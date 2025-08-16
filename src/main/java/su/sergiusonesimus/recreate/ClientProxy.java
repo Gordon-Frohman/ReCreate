@@ -17,6 +17,9 @@ import su.sergiusonesimus.recreate.content.contraptions.components.structureMove
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.bearing.MechanicalBearingTileEntity;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.glue.SuperGlueEntity;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.glue.SuperGlueRenderer;
+import su.sergiusonesimus.recreate.content.contraptions.components.waterwheel.WaterWheelRenderBlock;
+import su.sergiusonesimus.recreate.content.contraptions.components.waterwheel.WaterWheelTileEntity;
+import su.sergiusonesimus.recreate.content.contraptions.components.waterwheel.WaterWheelTileEntityRenderer;
 import su.sergiusonesimus.recreate.content.contraptions.goggles.GogglesModel;
 import su.sergiusonesimus.recreate.content.contraptions.relays.elementary.cogwheel.CogWheelRenderBlock;
 import su.sergiusonesimus.recreate.content.contraptions.relays.elementary.cogwheel.CogWheelTileEntity;
@@ -24,6 +27,10 @@ import su.sergiusonesimus.recreate.content.contraptions.relays.elementary.cogwhe
 import su.sergiusonesimus.recreate.content.contraptions.relays.elementary.shaft.ShaftRenderBlock;
 import su.sergiusonesimus.recreate.content.contraptions.relays.elementary.shaft.ShaftTileEntity;
 import su.sergiusonesimus.recreate.content.contraptions.relays.elementary.shaft.ShaftTileEntityRenderer;
+import su.sergiusonesimus.recreate.content.contraptions.relays.encased.*;
+import su.sergiusonesimus.recreate.content.contraptions.relays.gearbox.GearboxRenderBlock;
+import su.sergiusonesimus.recreate.content.contraptions.relays.gearbox.GearboxTileEntity;
+import su.sergiusonesimus.recreate.content.contraptions.relays.gearbox.GearboxTileEntityRenderer;
 import su.sergiusonesimus.recreate.content.contraptions.wrench.WrenchRenderItem;
 import su.sergiusonesimus.recreate.events.InputEvents;
 import su.sergiusonesimus.recreate.foundation.utility.ghost.GhostBlocks;
@@ -35,6 +42,10 @@ public class ClientProxy extends CommonProxy {
     int creativeMotorRenderID;
     int cogwheelRenderID;
     int bearingRenderID;
+    int gearshiftRenderID;
+    int clutchRenderID;
+    int gearboxRenderID;
+    int waterWheelRenderID;
 
     ModelBiped gogglesArmorModel;
 
@@ -69,6 +80,10 @@ public class ClientProxy extends CommonProxy {
         ClientRegistry.bindTileEntitySpecialRenderer(CogWheelTileEntity.class, new CogWheelTileEntityRenderer());
         ClientRegistry
             .bindTileEntitySpecialRenderer(MechanicalBearingTileEntity.class, new BearingTileEntityRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(GearshiftTileEntity.class, new GearshiftTileEntityRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(ClutchTileEntity.class, new ClutchTileEntityRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(GearboxTileEntity.class, new GearboxTileEntityRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(WaterWheelTileEntity.class, new WaterWheelTileEntityRenderer());
 
         // block render ids
         shaftRenderID = RenderingRegistry.getNextAvailableRenderId();
@@ -79,6 +94,14 @@ public class ClientProxy extends CommonProxy {
         RenderingRegistry.registerBlockHandler(new CogWheelRenderBlock(cogwheelRenderID));
         bearingRenderID = RenderingRegistry.getNextAvailableRenderId();
         RenderingRegistry.registerBlockHandler(new BearingRenderBlock(bearingRenderID));
+        gearshiftRenderID = RenderingRegistry.getNextAvailableRenderId();
+        RenderingRegistry.registerBlockHandler(new GearshiftRenderBlock(gearshiftRenderID));
+        clutchRenderID = RenderingRegistry.getNextAvailableRenderId();
+        RenderingRegistry.registerBlockHandler(new ClutchRenderBlock(clutchRenderID));
+        gearboxRenderID = RenderingRegistry.getNextAvailableRenderId();
+        RenderingRegistry.registerBlockHandler(new GearboxRenderBlock(gearboxRenderID));
+        waterWheelRenderID = RenderingRegistry.getNextAvailableRenderId();
+        RenderingRegistry.registerBlockHandler(new WaterWheelRenderBlock(waterWheelRenderID));
 
         // armor model
         gogglesArmorModel = new GogglesModel();
@@ -127,6 +150,22 @@ public class ClientProxy extends CommonProxy {
 
     public int getBearingBlockRenderID() {
         return bearingRenderID;
+    }
+
+    public int getGearshiftBlockRenderID() {
+        return gearshiftRenderID;
+    }
+
+    public int getClutchBlockRenderID() {
+        return clutchRenderID;
+    }
+
+    public int getGearboxBlockRenderID() {
+        return gearboxRenderID;
+    }
+
+    public int getWaterWheelBlockRenderID() {
+        return waterWheelRenderID;
     }
 
     public ModelBiped getGogglesArmorModel() {

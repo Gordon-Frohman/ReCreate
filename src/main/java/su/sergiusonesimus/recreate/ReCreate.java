@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -20,14 +21,19 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
+import su.sergiusonesimus.recreate.compat.nei.CreateNEI;
 import su.sergiusonesimus.recreate.content.contraptions.TorquePropagator;
 import su.sergiusonesimus.recreate.content.contraptions.components.motor.CreativeMotorTileEntity;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.AllSubWorldTypes;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.bearing.MechanicalBearingTileEntity;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.glue.SuperGlueEntity;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.glue.SuperGlueHandler;
+import su.sergiusonesimus.recreate.content.contraptions.components.waterwheel.WaterWheelTileEntity;
 import su.sergiusonesimus.recreate.content.contraptions.relays.elementary.cogwheel.CogWheelTileEntity;
 import su.sergiusonesimus.recreate.content.contraptions.relays.elementary.shaft.ShaftTileEntity;
+import su.sergiusonesimus.recreate.content.contraptions.relays.encased.ClutchTileEntity;
+import su.sergiusonesimus.recreate.content.contraptions.relays.encased.GearshiftTileEntity;
+import su.sergiusonesimus.recreate.content.contraptions.relays.gearbox.GearboxTileEntity;
 import su.sergiusonesimus.recreate.events.ClientEvents;
 import su.sergiusonesimus.recreate.events.CommonEvents;
 import su.sergiusonesimus.recreate.foundation.config.AllConfigs;
@@ -47,6 +53,7 @@ public class ReCreate {
     public static final Random RANDOM = new Random();
 
     public static final ReCreateRegistrate REGISTRATE = new ReCreateRegistrate();
+    public static final CreateNEI CreateNEICompat = new CreateNEI();
 
     public static int idEntitySuperGlue;
 
@@ -109,6 +116,9 @@ public class ReCreate {
 
         // tile entities
         registerTileEntities();
+        if (Loader.isModLoaded("NotEnoughItems")) {
+            CreateNEICompat.loadConfig();
+        }
 
         proxy.init(event);
 
@@ -138,6 +148,10 @@ public class ReCreate {
         GameRegistry.registerTileEntity(CreativeMotorTileEntity.class, "Creative Motor");
         GameRegistry.registerTileEntity(CogWheelTileEntity.class, "Cogwheel");
         GameRegistry.registerTileEntity(MechanicalBearingTileEntity.class, "Mechanical Bearing");
+        GameRegistry.registerTileEntity(GearshiftTileEntity.class, "Gearshift");
+        GameRegistry.registerTileEntity(ClutchTileEntity.class, "Clutch");
+        GameRegistry.registerTileEntity(GearboxTileEntity.class, "Gearbox");
+        GameRegistry.registerTileEntity(WaterWheelTileEntity.class, "Waterwheel");
     }
 
     public static ResourceLocation asResource(String path) {
