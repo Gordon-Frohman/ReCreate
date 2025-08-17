@@ -4,7 +4,6 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 
 import su.sergiusonesimus.metaworlds.util.Direction;
 import su.sergiusonesimus.metaworlds.util.Direction.Axis;
@@ -36,13 +35,12 @@ public interface IWrenchable {
     }
 
     public default boolean onSneakWrenched(World world, int x, int y, int z, int face, EntityPlayer player) {
-        if (world instanceof WorldServer) {
-            if (player != null && !player.capabilities.isCreativeMode) world.getBlock(x, y, z)
-                .getDrops(world, x, y, z, world.getBlockMetadata(x, y, z), 0)
-                .forEach(itemStack -> { player.inventory.addItemStackToInventory(itemStack); });
-            world.setBlockToAir(x, y, z);
-            playRemoveSound(world, x, y, z);
-        }
+        if (player != null && !player.capabilities.isCreativeMode) world.getBlock(x, y, z)
+            .getDrops(world, x, y, z, world.getBlockMetadata(x, y, z), 0)
+            .forEach(itemStack -> { player.inventory.addItemStackToInventory(itemStack); });
+        world.setBlockToAir(x, y, z);
+        playRemoveSound(world, x, y, z);
+
         return true;
     }
 

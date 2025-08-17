@@ -29,8 +29,12 @@ import su.sergiusonesimus.recreate.content.contraptions.components.structureMove
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.bearing.MechanicalBearingTileEntity;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.glue.SuperGlueEntity;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.glue.SuperGlueHandler;
+import su.sergiusonesimus.recreate.content.contraptions.components.waterwheel.WaterWheelTileEntity;
 import su.sergiusonesimus.recreate.content.contraptions.relays.elementary.cogwheel.CogWheelTileEntity;
 import su.sergiusonesimus.recreate.content.contraptions.relays.elementary.shaft.ShaftTileEntity;
+import su.sergiusonesimus.recreate.content.contraptions.relays.encased.ClutchTileEntity;
+import su.sergiusonesimus.recreate.content.contraptions.relays.encased.GearshiftTileEntity;
+import su.sergiusonesimus.recreate.content.contraptions.relays.gearbox.GearboxTileEntity;
 import su.sergiusonesimus.recreate.events.ClientEvents;
 import su.sergiusonesimus.recreate.events.CommonEvents;
 import su.sergiusonesimus.recreate.foundation.config.AllConfigs;
@@ -142,6 +146,10 @@ public class ReCreate {
         GameRegistry.registerTileEntity(CreativeMotorTileEntity.class, "Creative Motor");
         GameRegistry.registerTileEntity(CogWheelTileEntity.class, "Cogwheel");
         GameRegistry.registerTileEntity(MechanicalBearingTileEntity.class, "Mechanical Bearing");
+        GameRegistry.registerTileEntity(GearshiftTileEntity.class, "Gearshift");
+        GameRegistry.registerTileEntity(ClutchTileEntity.class, "Clutch");
+        GameRegistry.registerTileEntity(GearboxTileEntity.class, "Gearbox");
+        GameRegistry.registerTileEntity(WaterWheelTileEntity.class, "Waterwheel");
     }
 
     private void registerRotators() {

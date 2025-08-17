@@ -1,0 +1,19 @@
+package su.sergiusonesimus.recreate.content.contraptions.relays.encased;
+
+import su.sergiusonesimus.recreate.AllModelTextures;
+import su.sergiusonesimus.recreate.content.contraptions.relays.elementary.AbstractShaftModel;
+
+public class ClutchRenderBlock extends SplitShaftRenderBlock {
+
+    public ClutchRenderBlock(int blockComplexRenderID) {
+        super(blockComplexRenderID);
+    }
+
+    public AbstractShaftModel getUnlitModel() {
+        return new EncasedShaftModel(AllModelTextures.CLUTCH);
+    }
+
+    public AbstractShaftModel getLitModel() {
+        return new EncasedShaftModel(AllModelTextures.LIT_CLUTCH);
+    }
+}

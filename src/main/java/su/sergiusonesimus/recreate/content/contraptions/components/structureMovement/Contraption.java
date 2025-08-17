@@ -520,7 +520,6 @@ public abstract class Contraption {
         }
         pendingSubContraptions.add(new BlockFace(x, y, z, facing));
     }
-
     // TODO
     // private void moveBelt(int x, int y, int z, Queue<ChunkCoordinates> frontier, Set<ChunkCoordinates> visited,
     // Block block, int meta) {
