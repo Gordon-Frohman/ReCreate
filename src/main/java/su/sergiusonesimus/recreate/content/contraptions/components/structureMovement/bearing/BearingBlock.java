@@ -7,23 +7,25 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import su.sergiusonesimus.metaworlds.util.Direction;
 import su.sergiusonesimus.recreate.ReCreate;
 import su.sergiusonesimus.recreate.content.contraptions.base.DirectionalKineticBlock;
+import su.sergiusonesimus.recreate.content.contraptions.relays.gearbox.GearboxBlock;
 
 public abstract class BearingBlock extends DirectionalKineticBlock {
 
     public static IIcon bearingTop;
     public static IIcon bearingSide;
-    public static IIcon bearingBottom;
 
     public BearingBlock(Material materialIn) {
         super(materialIn);
         this.setStepSound(soundTypePiston);
-        this.setHardness(0.5F);
+        this.setHardness(1.5F);
+        this.setResistance(10.0F);
     }
 
     @Override
@@ -67,7 +69,7 @@ public abstract class BearingBlock extends DirectionalKineticBlock {
     public IIcon getIcon(int side, int meta) {
         switch (side) {
             case 0:
-                return bearingBottom;
+                return GearboxBlock.gearboxSide;
             case 1:
                 return bearingTop;
             default:
@@ -80,6 +82,21 @@ public abstract class BearingBlock extends DirectionalKineticBlock {
     public void registerBlockIcons(IIconRegister iconRegister) {
         BearingBlock.bearingTop = iconRegister.registerIcon(ReCreate.ID + ":bearing_top");
         BearingBlock.bearingSide = iconRegister.registerIcon(ReCreate.ID + ":mechanical_bearing_side");
-        BearingBlock.bearingBottom = iconRegister.registerIcon(ReCreate.ID + ":gearbox");
+    }
+
+    /**
+     * Checks if the block is a solid face on the given side, used by placement logic.
+     *
+     * @param world The current world
+     * @param x     X Position
+     * @param y     Y position
+     * @param z     Z position
+     * @param side  The side to check
+     * @return True if the block is solid on the specified side.
+     */
+    public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side) {
+        return this.getDirection(world.getBlockMetadata(x, y, z))
+            .getOpposite()
+            .toForgeDirection() != side;
     }
 }

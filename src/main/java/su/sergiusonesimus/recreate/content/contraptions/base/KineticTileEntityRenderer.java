@@ -1,14 +1,13 @@
 package su.sergiusonesimus.recreate.content.contraptions.base;
 
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-
 import su.sergiusonesimus.metaworlds.util.Direction.Axis;
 import su.sergiusonesimus.recreate.content.contraptions.KineticDebugger;
 import su.sergiusonesimus.recreate.content.contraptions.relays.elementary.cogwheel.ICogWheel;
+import su.sergiusonesimus.recreate.foundation.tileentity.renderer.SafeTileEntityRenderer;
 import su.sergiusonesimus.recreate.foundation.utility.Color;
 import su.sergiusonesimus.recreate.util.AnimationTickHolder;
 
-public abstract class KineticTileEntityRenderer extends TileEntitySpecialRenderer {
+public abstract class KineticTileEntityRenderer extends SafeTileEntityRenderer<KineticTileEntity> {
 
     public static boolean rainbowMode = false;
 

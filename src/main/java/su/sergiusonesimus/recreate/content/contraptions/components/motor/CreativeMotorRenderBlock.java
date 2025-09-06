@@ -21,9 +21,11 @@ public class CreativeMotorRenderBlock implements ISimpleBlockRenderingHandler {
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer) {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 
         model.setFace(Direction.EAST);
+
+        model.shaft.render();
+
         model.render();
 
         block.setBlockBoundsForItemRender();

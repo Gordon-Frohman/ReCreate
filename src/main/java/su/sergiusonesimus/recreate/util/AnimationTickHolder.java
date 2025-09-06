@@ -1,6 +1,7 @@
 package su.sergiusonesimus.recreate.util;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.IBlockAccess;
 
 public class AnimationTickHolder {
 
@@ -39,18 +40,19 @@ public class AnimationTickHolder {
         return (mc.isGamePaused() ? mc.timer.renderPartialTicks : mc.timer.elapsedPartialTicks);
     }
 
-    // TODO
-    // public static int getTicks(IBlockAccess world) {
-    // if (world instanceof WrappedClientWorld)
-    // return getTicks(((WrappedClientWorld) world).getWrappedWorld());
-    // return world instanceof PonderWorld ? PonderUI.ponderTicks : getTicks();
-    // }
-    //
-    // public static float getRenderTime(IBlockAccess world) {
-    // return getTicks(world) + getPartialTicks(world);
-    // }
-    //
-    // public static float getPartialTicks(IBlockAccess world) {
-    // return world instanceof PonderWorld ? PonderUI.getPartialTicks() : getPartialTicks();
-    // }
+    public static int getTicks(IBlockAccess world) {
+        // TODO
+        // if (world instanceof WrappedClientWorld)
+        // return getTicks(((WrappedClientWorld) world).getWrappedWorld());
+        return /* world instanceof PonderWorld ? PonderUI.ponderTicks : */ getTicks();
+    }
+
+    public static float getRenderTime(IBlockAccess world) {
+        return getTicks(world) + getPartialTicks(world);
+    }
+
+    public static float getPartialTicks(IBlockAccess world) {
+        // TODO
+        return /* world instanceof PonderWorld ? PonderUI.getPartialTicks() : */ getPartialTicks();
+    }
 }

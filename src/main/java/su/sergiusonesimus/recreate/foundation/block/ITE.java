@@ -13,7 +13,7 @@ import net.minecraft.world.World;
 
 public interface ITE<T extends TileEntity> extends ITileEntityProvider {
 
-    Class<T> getTileEntityClass();
+    Class<? extends T> getTileEntityClass();
 
     default void withTileEntityDo(IBlockAccess world, int x, int y, int z, Consumer<T> action) {
         getTileEntityOptional(world, x, y, z).ifPresent(action);
@@ -45,7 +45,7 @@ public interface ITE<T extends TileEntity> extends ITileEntityProvider {
     @SuppressWarnings("unchecked")
     default T getTileEntity(IBlockAccess worldIn, int x, int y, int z) {
         TileEntity tileEntity = worldIn.getTileEntity(x, y, z);
-        Class<T> expectedClass = getTileEntityClass();
+        Class<? extends T> expectedClass = getTileEntityClass();
 
         if (tileEntity == null) return null;
         if (!expectedClass.isInstance(tileEntity)) return null;

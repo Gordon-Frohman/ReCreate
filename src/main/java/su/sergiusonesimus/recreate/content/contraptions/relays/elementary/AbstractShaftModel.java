@@ -4,6 +4,8 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 
+import org.lwjgl.opengl.GL11;
+
 import su.sergiusonesimus.metaworlds.util.Direction.Axis;
 import su.sergiusonesimus.recreate.AllModelTextures;
 
@@ -26,49 +28,48 @@ public abstract class AbstractShaftModel extends ModelBase {
 
     public AbstractShaftModel setAxis(Axis axis) {
         this.axis = axis;
-        switch (this.axis) {
-            case X:
-                core.rotateAngleX = 0;
-                core.rotateAngleY = 0;
-                core.rotateAngleZ = (float) (-Math.PI / 2);
-                break;
-            default:
-            case Y:
-                core.rotateAngleX = 0;
-                core.rotateAngleY = 0;
-                core.rotateAngleZ = 0;
-                break;
-            case Z:
-                core.rotateAngleX = (float) (-Math.PI / 2);
-                core.rotateAngleY = 0;
-                core.rotateAngleZ = 0;
-                break;
-        }
         return this;
     }
 
     public AbstractShaftModel setRotation(float angle) {
+        core.rotateAngleY = angle;
+        return this;
+    }
+
+    private void renderCore() {
+        float angle = 0;
+        float x = 0;
+        float y = 0;
+        float z = 0;
         switch (axis) {
-            default:
             case X:
+                angle = -90;
+                z = 1;
+                break;
             case Y:
-                core.rotateAngleY = angle;
                 break;
             case Z:
-                core.rotateAngleZ = angle;
+                angle = 90;
+                x = 1;
                 break;
         }
-        return this;
+
+        GL11.glPushMatrix();
+
+        GL11.glRotatef(angle, x, y, z);
+        core.render(0.0625f);
+
+        GL11.glPopMatrix();
     }
 
     public void render() {
         texture.bind();
-        core.render(0.0625f);
+        renderCore();
     }
 
     public void render(TileEntitySpecialRenderer renderer) {
         renderer.bindTexture(texture.getLocation());
-        core.render(0.0625f);
+        renderCore();
     }
 
 }

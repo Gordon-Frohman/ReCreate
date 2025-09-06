@@ -1,7 +1,5 @@
 package su.sergiusonesimus.recreate.content.contraptions.relays.elementary.cogwheel;
 
-import net.minecraft.tileentity.TileEntity;
-
 import org.lwjgl.opengl.GL11;
 
 import su.sergiusonesimus.metaworlds.util.Direction.Axis;
@@ -11,7 +9,6 @@ import su.sergiusonesimus.recreate.content.contraptions.base.KineticTileEntity;
 import su.sergiusonesimus.recreate.content.contraptions.base.KineticTileEntityRenderer;
 import su.sergiusonesimus.recreate.content.contraptions.relays.elementary.shaft.ShaftModel;
 import su.sergiusonesimus.recreate.foundation.utility.Color;
-import su.sergiusonesimus.tebreaker.TileEntityBreaker;
 
 public class CogWheelTileEntityRenderer extends KineticTileEntityRenderer {
 
@@ -20,15 +17,10 @@ public class CogWheelTileEntityRenderer extends KineticTileEntityRenderer {
     private final LargeCogWheelModel largeCogwheel = new LargeCogWheelModel();
 
     @Override
-    public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTicks) {
+    public void renderSafe(KineticTileEntity tileEntity, double x, double y, double z, float partialTicks) {
         CogWheelBlock block = (CogWheelBlock) tileEntity.getBlockType();
         Axis axis = block.getAxis(tileEntity.getBlockMetadata());
-        float angle = getAngleForTe(
-            (KineticTileEntity) tileEntity,
-            tileEntity.xCoord,
-            tileEntity.yCoord,
-            tileEntity.zCoord,
-            axis);
+        float angle = getAngleForTe(tileEntity, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, axis);
         shaft.setAxis(axis);
         shaft.setRotation(angle);
         if (!block.isLarge) {
@@ -39,7 +31,7 @@ public class CogWheelTileEntityRenderer extends KineticTileEntityRenderer {
             if (!shouldOffset(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, axis)) angle -= Math.PI / 16F;
             largeCogwheel.setRotation(angle);
         }
-        Color color = getColor((KineticTileEntity) tileEntity);
+        Color color = getColor(tileEntity);
 
         GL11.glPushMatrix();
         GL11.glTranslatef((float) x + 0.5F, (float) y + 0.5F, (float) z + 0.5F);
@@ -53,13 +45,13 @@ public class CogWheelTileEntityRenderer extends KineticTileEntityRenderer {
             if (damageTexture) TileEntityBreakerIntegration.setBreakTexture(
                 this,
                 TileEntityBreakerIntegration.COGWHEEL,
-                TileEntityBreaker.getTileEntityDestroyProgress(tileEntity));
+                TileEntityBreakerIntegration.getTileEntityDestroyProgress(tileEntity));
             cogwheel.render(this);
         } else {
             if (damageTexture) TileEntityBreakerIntegration.setBreakTexture(
                 this,
                 TileEntityBreakerIntegration.LARGE_COGWHEEL,
-                TileEntityBreaker.getTileEntityDestroyProgress(tileEntity));
+                TileEntityBreakerIntegration.getTileEntityDestroyProgress(tileEntity));
             largeCogwheel.render(this);
         }
 

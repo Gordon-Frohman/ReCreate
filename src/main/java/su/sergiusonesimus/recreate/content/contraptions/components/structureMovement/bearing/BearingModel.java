@@ -4,6 +4,8 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 
+import org.lwjgl.opengl.GL11;
+
 import su.sergiusonesimus.metaworlds.util.Direction;
 import su.sergiusonesimus.metaworlds.util.Direction.Axis;
 import su.sergiusonesimus.metaworlds.util.Direction.AxisDirection;
@@ -89,9 +91,6 @@ public class BearingModel extends ModelBase {
     }
 
     public BearingModel setRotations(float shaftAngle, float topAngle) {
-        if (face.getAxis() != Axis.Z) {
-            shaftAngle *= -1;
-        }
         if (face.getAxis() != Axis.X) {
             topAngle *= -1;
         }
@@ -100,14 +99,20 @@ public class BearingModel extends ModelBase {
         return this;
     }
 
-    public void render(AllModelTextures bearingTexture) {
-        bearingTexture.bind();
+    public void renderCore() {
+        GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
         bearing.render(0.0625F);
+    }
+
+    public void render(AllModelTextures bearingTexture) {
+        this.shaft.render();
+        bearingTexture.bind();
+        renderCore();
     }
 
     public void render(AllModelTextures bearingTexture, TileEntitySpecialRenderer renderer) {
         renderer.bindTexture(bearingTexture.getLocation());
-        bearing.render(0.0625F);
+        renderCore();
     }
 
 }

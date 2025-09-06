@@ -2,7 +2,9 @@ package su.sergiusonesimus.recreate.content.contraptions.components.motor;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
 
 import su.sergiusonesimus.metaworlds.util.Direction;
@@ -16,21 +18,21 @@ public class CreativeMotorModel extends ModelBase {
     Direction face;
 
     public ShaftModel shaft;
-    ModelRenderer sideCover1;
-    ModelRenderer sideCover2;
-    ModelRenderer bottomCover;
-    ModelRenderer rod1;
-    ModelRenderer rod2;
-    ModelRenderer rod3;
-    ModelRenderer rod4;
-    ModelRenderer motor;
-    ModelRenderer stand;
-    ModelRenderer coiling;
-    ModelRenderer wipers;
-    ModelRenderer wiper1;
-    ModelRenderer wiper2;
-    ModelRenderer wiper3;
-    ModelRenderer wiper4;
+    public ModelRenderer sideCover1;
+    public ModelRenderer sideCover2;
+    public ModelRenderer bottomCover;
+    public ModelRenderer rod1;
+    public ModelRenderer rod2;
+    public ModelRenderer rod3;
+    public ModelRenderer rod4;
+    public ModelRenderer motor;
+    public ModelRenderer stand;
+    public ModelRenderer coiling;
+    public ModelRenderer wipers;
+    public ModelRenderer wiper1;
+    public ModelRenderer wiper2;
+    public ModelRenderer wiper3;
+    public ModelRenderer wiper4;
 
     public CreativeMotorModel() {
         final int textureWidth = 64;
@@ -98,7 +100,7 @@ public class CreativeMotorModel extends ModelBase {
         coiling.setRotationPoint(0F, 0F, 0F);
         motor.addChild(coiling);
 
-        int wiperOffsetX = 51;
+        int wiperOffsetX = 48;
         int wiperOffsetY = 10;
         Vector3f wiperOrigin = new Vector3f(-4F, 0F, -4.5F);
         int wiperWidth = 8;
@@ -178,14 +180,29 @@ public class CreativeMotorModel extends ModelBase {
     }
 
     public CreativeMotorModel setRotation(float angle) {
-        shaft.setRotation(face.getAxis() == Axis.Z ? angle : -angle);
+        shaft.setRotation(angle);
         return this;
+    }
+
+    public void renderCore() {
+        GL11.glPushMatrix();
+
+        GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+
+        motor.render(0.0625F);
+        stand.render(0.0625F);
+
+        GL11.glPopMatrix();
     }
 
     public void render() {
         AllModelTextures.CREATIVE_MOTOR.bind();
-        motor.render(0.0625F);
-        stand.render(0.0625F);
+        renderCore();
+    }
+
+    public void render(TileEntitySpecialRenderer renderer) {
+        renderer.bindTexture(AllModelTextures.CREATIVE_MOTOR.getLocation());
+        renderCore();
     }
 
 }

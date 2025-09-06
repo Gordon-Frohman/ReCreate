@@ -14,6 +14,9 @@ import su.sergiusonesimus.metaworlds.util.Direction.Axis;
 import su.sergiusonesimus.recreate.content.contraptions.base.IRotate;
 import su.sergiusonesimus.recreate.content.contraptions.base.KineticTileEntity;
 import su.sergiusonesimus.recreate.content.contraptions.relays.elementary.cogwheel.ICogWheel;
+import su.sergiusonesimus.recreate.content.contraptions.relays.encased.DirectionalShaftHalvesTileEntity;
+import su.sergiusonesimus.recreate.content.contraptions.relays.encased.SplitShaftTileEntity;
+import su.sergiusonesimus.recreate.content.contraptions.relays.gearbox.GearboxTileEntity;
 import su.sergiusonesimus.recreate.foundation.config.AllConfigs;
 import su.sergiusonesimus.recreate.foundation.utility.Iterate;
 
@@ -128,17 +131,14 @@ public class RotationPropagator {
     }
 
     private static float getAxisModifier(KineticTileEntity te, Direction direction) {
-        // TODO
-        // if (!(te.hasSource()||te.isSource()) || !(te instanceof DirectionalShaftHalvesTileEntity))
-        // return 1;
-        // Direction source = ((DirectionalShaftHalvesTileEntity) te).getSourceFacing();
-        //
-        // if (te instanceof GearboxTileEntity)
-        // return direction.getAxis() == source.getAxis() ? direction == source ? 1 : -1
-        // : direction.getAxisDirection() == source.getAxisDirection() ? -1 : 1;
-        //
-        // if (te instanceof SplitShaftTileEntity)
-        // return ((SplitShaftTileEntity) te).getRotationSpeedModifier(direction);
+        if (!(te.hasSource() || te.isSource()) || !(te instanceof DirectionalShaftHalvesTileEntity)) return 1;
+        Direction source = ((DirectionalShaftHalvesTileEntity) te).getSourceFacing();
+
+        if (te instanceof GearboxTileEntity)
+            return direction.getAxis() == source.getAxis() ? direction == source ? 1 : -1
+                : direction.getAxisDirection() == source.getAxisDirection() ? -1 : 1;
+
+        if (te instanceof SplitShaftTileEntity) return ((SplitShaftTileEntity) te).getRotationSpeedModifier(direction);
 
         return 1;
     }
@@ -356,9 +356,8 @@ public class RotationPropagator {
         if (!(neighbourBlock instanceof IRotate)) return null;
         TileEntity neighbourTE = currentTE.getWorldObj()
             .getTileEntity(neighbourX, neighbourY, neighbourZ);
-        if (neighbourTE == null || !(neighbourTE instanceof KineticTileEntity)) return null;
-        KineticTileEntity neighbourKTE = (KineticTileEntity) neighbourTE;
-        if (!(neighbourKTE.blockType instanceof IRotate)) return null;
+        if (neighbourTE == null || !(neighbourTE instanceof KineticTileEntity neighbourKTE)) return null;
+        if (!(neighbourKTE.getBlockType() instanceof IRotate)) return null;
         if (!isConnected(currentTE, neighbourKTE) && !isConnected(neighbourKTE, currentTE)) return null;
         return neighbourKTE;
     }
