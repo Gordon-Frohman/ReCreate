@@ -11,10 +11,10 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 import su.sergiusonesimus.metaworlds.client.multiplayer.SubWorldClient;
-import su.sergiusonesimus.metaworlds.compat.packet.SubWorldUpdatePacket;
+import su.sergiusonesimus.metaworlds.network.play.server.S03SubWorldUpdatePacket;
 import su.sergiusonesimus.metaworlds.zmixin.interfaces.minecraft.world.IMixinWorld;
 
-public class ContraptionWorldUpdatePacket extends SubWorldUpdatePacket {
+public class ContraptionWorldUpdatePacket extends S03SubWorldUpdatePacket {
 
     public boolean stalled;
 
