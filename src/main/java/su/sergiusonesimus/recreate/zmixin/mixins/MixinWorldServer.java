@@ -15,16 +15,16 @@ public class MixinWorldServer extends MixinWorld {
 
     public World createContraptionWorld(int newSubWorldID, Contraption contraption) {
         World newSubWorld = this.generateContraptionWorld(newSubWorldID, contraption);
-        
+
         MinecraftForge.EVENT_BUS.post(new WorldEvent.Load(newSubWorld));
-        
+
         return newSubWorld;
     }
 
-	@Override
-	public World createContraptionWorld(int newSubWorldID, Contraption contraption, double centerX, double centerY,
-		double centerZ, double translationX, double translationY, double translationZ, double rotationPitch,
-		double rotationYaw, double rotationRoll, double scaling) {
+    @Override
+    public World createContraptionWorld(int newSubWorldID, Contraption contraption, double centerX, double centerY,
+        double centerZ, double translationX, double translationY, double translationZ, double rotationPitch,
+        double rotationYaw, double rotationRoll, double scaling) {
         World newSubWorld = this.generateContraptionWorld(newSubWorldID, contraption);
         SubWorld subworld = (SubWorld) newSubWorld;
 
@@ -34,10 +34,10 @@ public class MixinWorldServer extends MixinWorld {
         subworld.setRotationPitch(rotationPitch);
         subworld.setRotationRoll(rotationRoll);
         subworld.setScaling(scaling);
-        
+
         MinecraftForge.EVENT_BUS.post(new WorldEvent.Load(newSubWorld));
-        
+
         return newSubWorld;
-	}
+    }
 
 }

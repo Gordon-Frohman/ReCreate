@@ -18,9 +18,7 @@ import javax.annotation.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityHanging;
 import net.minecraft.entity.EntityList;
-import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
@@ -45,6 +43,8 @@ import su.sergiusonesimus.metaworlds.MetaworldsMod;
 import su.sergiusonesimus.metaworlds.api.SubWorld;
 import su.sergiusonesimus.metaworlds.util.BlockVolatilityMap;
 import su.sergiusonesimus.metaworlds.util.Direction;
+import su.sergiusonesimus.metaworlds.util.DisplacementHelper;
+import su.sergiusonesimus.metaworlds.util.DisplacementHelper.CustomBlockDisplacement;
 import su.sergiusonesimus.metaworlds.util.RotationHelper;
 import su.sergiusonesimus.metaworlds.world.SubWorldServer;
 import su.sergiusonesimus.metaworlds.zmixin.interfaces.minecraft.world.IMixinWorld;
@@ -999,7 +999,6 @@ public abstract class Contraption {
         removeBlocksFromWorld(world, 0, 0, 0);
     }
 
-    @SuppressWarnings("unchecked")
     public void removeBlocksFromWorld(World parentWorld, int offsetX, int offsetY, int offsetZ) {
         offsetX += anchorX;
         offsetY += anchorY;
@@ -1009,12 +1008,6 @@ public abstract class Contraption {
 
         Block oldBlock;
         Block block;
-        int meta;
-        NBTTagCompound nbttag;
-        TileEntity oldTE;
-        TileEntity newTE;
-        Entity oldEntity;
-        Entity newEntity;
 
         ArrayList<ChunkCoordinates> blocksToTake = new ArrayList<ChunkCoordinates>();
         ArrayList<ChunkCoordinates> blocksToTakeSolidBrittle = new ArrayList<ChunkCoordinates>();
@@ -1039,47 +1032,21 @@ public abstract class Contraption {
         listsToParse.add(blocksToTakeBrittle);
         for (List<ChunkCoordinates> currentList : listsToParse) {
             for (ChunkCoordinates curCoord : currentList) {
-                block = parentWorld.getBlock(curCoord.posX, curCoord.posY, curCoord.posZ);
-                meta = parentWorld.getBlockMetadata(curCoord.posX, curCoord.posY, curCoord.posZ);
+                DisplacementHelper.displaceBlock(
+                    curCoord.posX,
+                    curCoord.posY,
+                    curCoord.posZ,
+                    parentWorld,
+                    contraptionWorld,
+                    new CustomBlockDisplacement() {
 
-                if (customBlockRemoval(parentWorld, curCoord.posX, curCoord.posY, curCoord.posZ, block, meta)) continue;
+                        @Override
+                        public boolean tryDisplaceBlock(World sourceWorld, World targetWorld, int x, int y, int z,
+                            Block block, int metadata) {
+                            return customBlockRemoval(sourceWorld, x, y, z, block, metadata);
+                        }
 
-                contraptionWorld.setBlock(curCoord.posX, curCoord.posY, curCoord.posZ, block, meta, 0);
-                contraptionWorld.setBlockMetadataWithNotify(curCoord.posX, curCoord.posY, curCoord.posZ, meta, 0);
-                if (block.hasTileEntity(meta)) {
-                    oldTE = parentWorld.getTileEntity(curCoord.posX, curCoord.posY, curCoord.posZ);
-                    nbttag = new NBTTagCompound();
-                    oldTE.writeToNBT(nbttag);
-                    oldTE.invalidate();
-                    newTE = TileEntity.createAndLoadEntity(nbttag);
-                    contraptionWorld.setTileEntity(curCoord.posX, curCoord.posY, curCoord.posZ, newTE);
-                }
-                List<Entity> entities = parentWorld.getEntitiesWithinAABBExcludingEntity(
-                    null,
-                    AxisAlignedBB
-                        .getBoundingBox(
-                            curCoord.posX,
-                            curCoord.posY,
-                            curCoord.posZ,
-                            curCoord.posX + 1,
-                            curCoord.posY + 1,
-                            curCoord.posZ + 1)
-                        .expand(0.25, 0.25, 0.25));
-                Iterator<Entity> j$ = entities.iterator();
-                while (j$.hasNext()) {
-                    oldEntity = j$.next();
-                    if (oldEntity instanceof EntityMinecart || (oldEntity instanceof EntityHanging
-                        && (((EntityHanging) oldEntity).field_146063_b == curCoord.posX
-                            && ((EntityHanging) oldEntity).field_146064_c == curCoord.posY
-                            && ((EntityHanging) oldEntity).field_146062_d == curCoord.posZ))) {
-                        nbttag = new NBTTagCompound();
-                        newEntity = EntityList
-                            .createEntityByName(EntityList.getEntityString(oldEntity), contraptionWorld);
-                        newEntity.copyDataFrom(oldEntity, true);
-                        contraptionWorld.spawnEntityInWorld(newEntity);
-                        oldEntity.setDead();
-                    }
-                }
+                    });
             }
         }
 
@@ -1109,35 +1076,13 @@ public abstract class Contraption {
     private double oldCenterZ;
 
     public void alignContraption() {
-        ContraptionWorld subworld = (ContraptionWorld) contraptionWorld;
-        oldCenterX = subworld.getCenterX();
-        oldCenterY = subworld.getCenterY();
-        oldCenterZ = subworld.getCenterZ();
-        subworld.setRotationYaw((double) Math.round(subworld.getRotationYaw() / 90.0D) * 90.0D);
-        subworld.setRotationPitch(0.0D);
-        subworld.setRotationRoll(0.0D);
-        subworld.setTranslation(
-            (double) Math.round(subworld.getTranslationX()),
-            (double) Math.round(subworld.getTranslationY()),
-            (double) Math.round(subworld.getTranslationZ()));
-        subworld.setScaling(1.0D);
-        subworld.setCenter(0.0D, 0.0D, 0.0D);
-        subworld.setMotion(0.0D, 0.0D, 0.0D);
-        subworld.setRotationYawSpeed(0.0D);
-        subworld.setRotationPitchSpeed(0.0D);
-        subworld.setRotationRollSpeed(0.0D);
-        subworld.setScaleChangeRate(0.0D);
+        ((ContraptionWorld) contraptionWorld).alignSubWorld();
     }
 
     @SuppressWarnings("unchecked")
     public void addBlocksToWorld(World world) {
         ContraptionWorld subworld = (ContraptionWorld) contraptionWorld;
         Block block;
-        int oldMeta;
-        int newMeta;
-        NBTTagCompound nbttag;
-        TileEntity oldTE;
-        TileEntity newTE;
         Entity oldEntity;
         Entity newEntity;
 
@@ -1165,31 +1110,28 @@ public abstract class Contraption {
         listsToParse.add(blocksToTakeBrittle);
         for (List<ChunkCoordinates> currentList : listsToParse) {
             for (ChunkCoordinates curCoord : currentList) {
-                block = contraptionWorld.getBlock(curCoord.posX, curCoord.posY, curCoord.posZ);
-                oldMeta = contraptionWorld.getBlockMetadata(curCoord.posX, curCoord.posY, curCoord.posZ);
-                newMeta = RotationHelper.getRotatedMeta(contraptionWorld, curCoord.posX, curCoord.posY, curCoord.posZ);
-                ChunkCoordinates globalPos = this.getContraptionWorld()
-                    .transformBlockToGlobal(curCoord.posX, curCoord.posY, curCoord.posZ);
+                DisplacementHelper.displaceBlock(
+                    curCoord.posX,
+                    curCoord.posY,
+                    curCoord.posZ,
+                    contraptionWorld,
+                    world,
+                    new CustomBlockDisplacement() {
 
-                if (customBlockPlacement(world, globalPos.posX, globalPos.posY, globalPos.posZ, block, newMeta))
-                    continue;
+                        @Override
+                        public boolean tryDisplaceBlock(World sourceWorld, World targetWorld, int x, int y, int z,
+                            Block block, int metadata) {
+                            ChunkCoordinates globalPos = getContraptionWorld().transformBlockToGlobal(x, y, z);
+                            return customBlockPlacement(
+                                targetWorld,
+                                globalPos.posX,
+                                globalPos.posY,
+                                globalPos.posZ,
+                                block,
+                                metadata);
+                        }
 
-                world.setBlock(globalPos.posX, globalPos.posY, globalPos.posZ, block, newMeta, 3);
-                world.setBlockMetadataWithNotify(globalPos.posX, globalPos.posY, globalPos.posZ, newMeta, 3);
-                if (block.hasTileEntity(oldMeta)) {
-                    RotationHelper.rotateTileEntity(contraptionWorld, curCoord.posX, curCoord.posY, curCoord.posZ);
-                    oldTE = contraptionWorld.getTileEntity(curCoord.posX, curCoord.posY, curCoord.posZ);
-                    nbttag = new NBTTagCompound();
-                    oldTE.writeToNBT(nbttag);
-                    oldTE.invalidate();
-                    newTE = TileEntity.createAndLoadEntity(nbttag);
-                    if (newTE.blockMetadata != -1) newTE.blockMetadata = newMeta;
-                    newTE.xCoord = globalPos.posX;
-                    newTE.yCoord = globalPos.posY;
-                    newTE.zCoord = globalPos.posZ;
-                    newTE.setWorldObj(world);
-                    world.setTileEntity(globalPos.posX, globalPos.posY, globalPos.posZ, newTE);
-                }
+                    });
             }
         }
 
@@ -1197,7 +1139,6 @@ public abstract class Contraption {
         while (iter.hasNext()) {
             oldEntity = iter.next();
             if (oldEntity instanceof EntityPlayer) continue;
-            nbttag = new NBTTagCompound();
             newEntity = EntityList.createEntityByName(EntityList.getEntityString(oldEntity), world);
             newEntity.copyDataFrom(oldEntity, true);
             Vec3 globalCoords = this.getContraptionWorld()
@@ -1218,13 +1159,12 @@ public abstract class Contraption {
         for (List<ChunkCoordinates> currentList : listsToParse) {
             for (ChunkCoordinates curCoord : currentList) {
                 block = contraptionWorld.getBlock(curCoord.posX, curCoord.posY, curCoord.posZ);
-                oldMeta = contraptionWorld.getBlockMetadata(curCoord.posX, curCoord.posY, curCoord.posZ);
                 contraptionWorld.setBlockToAir(curCoord.posX, curCoord.posY, curCoord.posZ);
             }
         }
 
         subworld.setCenter(oldCenterX, oldCenterY, oldCenterZ);
-        if (subworld instanceof SubWorldServer subWorldServer/* && subWorldServer.isEmpty() */) {
+        if (subworld instanceof SubWorldServer subWorldServer) {
             ((IMixinWorld) subWorldServer.getParentWorld()).getSubWorldsMap()
                 .remove(subWorldServer.getSubWorldID());
             subWorldServer.removeSubWorld();
