@@ -301,6 +301,21 @@ public class MechanicalPistonBlock extends DirectionalAxisKineticBlock implement
         return AllConfigs.SERVER.kinetics.maxPistonPoles;
     }
 
+    /**
+     * Returns a bounding box from the pool of bounding boxes (this means this box can change after the pool has been
+     * cleared to be reused)
+     */
+    public AxisAlignedBB getCollisionBoundingBoxFromPool(World worldIn, int x, int y, int z) {
+        this.setBlockBoundsBasedOnState(worldIn, x, y, z);
+        return AxisAlignedBB.getBoundingBox(
+            (double) x + this.minX,
+            (double) y + this.minY,
+            (double) z + this.minZ,
+            (double) x + this.maxX,
+            (double) y + this.maxY,
+            (double) z + this.maxZ);
+    }
+
     @Override
     public void setBlockBoundsBasedOnState(IBlockAccess worldIn, int x, int y, int z) {
         minX = minY = minZ = 0.0D;
