@@ -11,6 +11,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 import su.sergiusonesimus.metaworlds.MetaworldsMod;
 import su.sergiusonesimus.metaworlds.api.SubWorldTypeManager;
+import su.sergiusonesimus.metaworlds.network.play.server.S03SubWorldUpdatePacket;
+import su.sergiusonesimus.metaworlds.world.SubWorldServer;
 import su.sergiusonesimus.recreate.foundation.utility.NBTHelper;
 
 public class ContraptionWorldCreatePacket implements IMessage {
@@ -18,14 +20,20 @@ public class ContraptionWorldCreatePacket implements IMessage {
     public Integer subWorldID;
     public Integer subWorldType;
     NBTTagCompound contraptionData;
+    public S03SubWorldUpdatePacket subworldData = null;
 
     public ContraptionWorldCreatePacket() {}
 
     public ContraptionWorldCreatePacket(ContraptionWorld sourceWorld) {
         this.subWorldID = sourceWorld.getSubWorldID();
         this.subWorldType = SubWorldTypeManager.getTypeID(sourceWorld.getSubWorldType());
-        contraptionData = sourceWorld.getContraption()
+        this.contraptionData = sourceWorld.getContraption()
             .writeNBT(true);
+        if (sourceWorld != null) {
+            subWorldType = SubWorldTypeManager.getTypeID(sourceWorld.getSubWorldType());
+            subworldData = ((SubWorldServer) sourceWorld)
+                .getUpdatePacket(((SubWorldServer) sourceWorld), 1 | 2 | 4 | 8 | 16);
+        }
     }
 
     @Override
@@ -33,6 +41,10 @@ public class ContraptionWorldCreatePacket implements IMessage {
         subWorldID = buf.readInt();
         subWorldType = buf.readInt();
         contraptionData = NBTHelper.readNBTTagCompound(buf);
+        if (buf.readBoolean()) {
+            this.subworldData = new S03SubWorldUpdatePacket();
+            this.subworldData.fromBytes(buf);
+        }
     }
 
     @Override
@@ -40,6 +52,13 @@ public class ContraptionWorldCreatePacket implements IMessage {
         buf.writeInt(subWorldID);
         buf.writeInt(subWorldType);
         NBTHelper.writeNBTTagCompound(contraptionData, buf);
+
+        if (this.subworldData != null) {
+            buf.writeBoolean(true);
+            this.subworldData.toBytes(buf);
+        } else {
+            buf.writeBoolean(false);
+        }
     }
 
     public static class Handler implements IMessageHandler<ContraptionWorldCreatePacket, IMessage> {
@@ -55,6 +74,7 @@ public class ContraptionWorldCreatePacket implements IMessage {
             contraption.readNBT(message.contraptionData, true);
             contraption.contraptionWorld = (World) contraptionWorld;
             contraptionWorld.setContraption(contraption);
+            if (message.subworldData != null) message.subworldData.executeOnTick();
             return null;
         }
     }

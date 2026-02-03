@@ -27,6 +27,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -36,7 +37,6 @@ import net.minecraftforge.fluids.IFluidHandler;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import codechicken.lib.math.MathHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import su.sergiusonesimus.metaworlds.MetaworldsMod;
@@ -123,8 +123,53 @@ public abstract class Contraption {
         return contraptionWorld;
     }
 
+    public World getWorld(double centerX, double centerY, double centerZ, double translationX, double translationY,
+        double translationZ, double rotationPitch, double rotationYaw, double rotationRoll, double scaling) {
+        if (parentWorld == null) return null;
+        if (contraptionWorld == null)
+            contraptionWorld = ((IMixinWorldReCreate) ((IMixinWorld) parentWorld).getParentWorld())
+                .createContraptionWorld(
+                    this,
+                    centerX,
+                    centerY,
+                    centerZ,
+                    translationX,
+                    translationY,
+                    translationZ,
+                    rotationPitch,
+                    rotationYaw,
+                    rotationRoll,
+                    scaling);
+        else {
+            ContraptionWorld contraption = (ContraptionWorld) contraptionWorld;
+            contraption.setCenter(centerX, centerY, centerZ);
+            contraption.setTranslation(translationX, translationY, translationZ);
+            contraption.setRotationYaw(rotationYaw);
+            contraption.setRotationPitch(rotationPitch);
+            contraption.setRotationRoll(rotationRoll);
+            contraption.setScaling(scaling);
+        }
+        return contraptionWorld;
+    }
+
     public ContraptionWorld getContraptionWorld() {
         return (ContraptionWorld) getWorld();
+    }
+
+    public ContraptionWorld getContraptionWorld(double centerX, double centerY, double centerZ, double translationX,
+        double translationY, double translationZ, double rotationPitch, double rotationYaw, double rotationRoll,
+        double scaling) {
+        return (ContraptionWorld) getWorld(
+            centerX,
+            centerY,
+            centerZ,
+            translationX,
+            translationY,
+            translationZ,
+            rotationPitch,
+            rotationYaw,
+            rotationRoll,
+            scaling);
     }
 
     public boolean hasContraptionWorld() {
@@ -280,7 +325,9 @@ public abstract class Contraption {
 
     public void tick() {
         if (parentWorld == null) {
-            parentWorld = ((IMixinWorld) MetaworldsMod.proxy.getMainWorld()).getSubWorld(parentWorldID);
+            World mainWorld = MetaworldsMod.proxy.getMainWorld();
+            if (mainWorld == null) return;
+            parentWorld = ((IMixinWorld) mainWorld).getSubWorld(parentWorldID);
         }
         if (stabilizedSubContraptionsIDs.size() > stabilizedSubContraptions.size()) {
             for (Map.Entry<Integer, BlockFace> entry : stabilizedSubContraptionsIDs.entrySet()) {
@@ -1004,7 +1051,17 @@ public abstract class Contraption {
         offsetY += anchorY;
         offsetZ += anchorZ;
         glueToRemove.forEach(SuperGlueEntity::setDead);
-        ContraptionWorld contraption = this.getContraptionWorld();
+        getContraptionWorld(
+            (double) offsetX + 0.5D,
+            (double) offsetY + 0.5D,
+            (double) offsetZ + 0.5D,
+            ((IMixinWorld) parentWorld).getTranslationX(),
+            ((IMixinWorld) parentWorld).getTranslationY(),
+            ((IMixinWorld) parentWorld).getTranslationZ(),
+            ((IMixinWorld) parentWorld).getRotationPitch(),
+            ((IMixinWorld) parentWorld).getRotationYaw(),
+            ((IMixinWorld) parentWorld).getRotationRoll(),
+            ((IMixinWorld) parentWorld).getScaling());
 
         Block oldBlock;
         Block block;
@@ -1059,16 +1116,6 @@ public abstract class Contraption {
                 if (oldBlock == block) parentWorld.setBlockToAir(curCoord.posX, curCoord.posY, curCoord.posZ);
             }
         }
-
-        contraption.setTranslation(
-            ((IMixinWorld) parentWorld).getTranslationX(),
-            ((IMixinWorld) parentWorld).getTranslationY(),
-            ((IMixinWorld) parentWorld).getTranslationZ());
-        contraption.setRotationYaw(((IMixinWorld) parentWorld).getRotationYaw());
-        contraption.setRotationPitch(((IMixinWorld) parentWorld).getRotationPitch());
-        contraption.setRotationRoll(((IMixinWorld) parentWorld).getRotationRoll());
-        contraption.setScaling(((IMixinWorld) parentWorld).getScaling());
-        contraption.setCenter((double) offsetX + 0.5D, (double) offsetY + 0.5D, (double) offsetZ + 0.5D);
     }
 
     private double oldCenterX;
