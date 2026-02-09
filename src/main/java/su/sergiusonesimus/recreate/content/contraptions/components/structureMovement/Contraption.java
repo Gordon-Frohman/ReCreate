@@ -78,7 +78,7 @@ public abstract class Contraption {
     public Integer anchorX;
     public Integer anchorY;
     public Integer anchorZ;
-    private int parentWorldID;
+    public int parentWorldID;
     public World parentWorld;
     public boolean stalled;
     public boolean hasUniversalCreativeCrate;

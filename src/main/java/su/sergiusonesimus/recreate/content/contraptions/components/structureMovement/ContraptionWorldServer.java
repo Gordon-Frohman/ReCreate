@@ -13,6 +13,7 @@ import net.minecraft.world.storage.ISaveHandler;
 import su.sergiusonesimus.metaworlds.api.SubWorld;
 import su.sergiusonesimus.metaworlds.network.play.server.S03SubWorldUpdatePacket;
 import su.sergiusonesimus.metaworlds.world.SubWorldServer;
+import su.sergiusonesimus.metaworlds.zmixin.interfaces.minecraft.world.IMixinWorld;
 
 public class ContraptionWorldServer extends SubWorldServer implements ContraptionWorld {
 
@@ -33,6 +34,11 @@ public class ContraptionWorldServer extends SubWorldServer implements Contraptio
             par5WorldSettings,
             par6Profiler);
         this.contraption = contraption;
+        if (contraption != null) {
+            contraption.contraptionWorld = this;
+            if (contraption.parentWorld == null)
+                contraption.parentWorld = ((IMixinWorld) parentWorld).getSubWorld(contraption.parentWorldID);
+        }
     }
 
     @Override

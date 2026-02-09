@@ -14,6 +14,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import su.sergiusonesimus.metaworlds.api.SubWorld;
 import su.sergiusonesimus.metaworlds.client.multiplayer.SubWorldClient;
+import su.sergiusonesimus.metaworlds.zmixin.interfaces.minecraft.world.IMixinWorld;
 
 @SideOnly(Side.CLIENT)
 public class ContraptionWorldClient extends SubWorldClient implements ContraptionWorld {
@@ -27,6 +28,11 @@ public class ContraptionWorldClient extends SubWorldClient implements Contraptio
         Contraption contraption) {
         super(parentWorld, newSubWorldID, par1NetClientHandler, par2WorldSettings, par3, par4, par5Profiler);
         this.contraption = contraption;
+        if (contraption != null) {
+            contraption.contraptionWorld = this;
+            if (contraption.parentWorld == null)
+                contraption.parentWorld = ((IMixinWorld) parentWorld).getSubWorld(contraption.parentWorldID);
+        }
     }
 
     @Override

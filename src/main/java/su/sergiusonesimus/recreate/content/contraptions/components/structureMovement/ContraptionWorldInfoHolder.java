@@ -31,7 +31,6 @@ public class ContraptionWorldInfoHolder extends SubWorldInfoHolder {
 
     public ContraptionWorldInfoHolder(NBTTagCompound sourceNBT) {
         super(sourceNBT);
-        subWorldType = AllSubWorldTypes.SUBWORLD_TYPE_CONTRAPTION_BEARING;
         if (sourceNBT.hasKey("Contraption"))
             contraption = Contraption.fromNBT(sourceNBT.getCompoundTag("Contraption"), false);
         isStalled = sourceNBT.getBoolean("Stalled");

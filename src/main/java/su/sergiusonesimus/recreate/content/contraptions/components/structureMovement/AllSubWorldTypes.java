@@ -31,6 +31,23 @@ public class AllSubWorldTypes {
             return ((IMixinWorldReCreate) parentWorld).createContraptionWorld(id, null);
         }
 
+        public World create(World parentWorld, SubWorldInfoHolder info) {
+            ContraptionWorldInfoHolder contraptionInfo = (ContraptionWorldInfoHolder) info;
+            return ((IMixinWorldReCreate) parentWorld).createContraptionWorld(
+                contraptionInfo.subWorldId,
+                contraptionInfo.contraption,
+                contraptionInfo.centerX,
+                contraptionInfo.centerY,
+                contraptionInfo.centerZ,
+                contraptionInfo.translationX,
+                contraptionInfo.translationY,
+                contraptionInfo.translationZ,
+                contraptionInfo.rotationPitch,
+                contraptionInfo.rotationYaw,
+                contraptionInfo.rotationRoll,
+                contraptionInfo.scaling);
+        }
+
         public IMessage getCreatePacket(SubWorld sourceWorld) {
             return new ContraptionWorldCreatePacket((ContraptionWorld) sourceWorld);
         }

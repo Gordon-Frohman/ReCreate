@@ -27,13 +27,10 @@ public class ContraptionWorldCreatePacket implements IMessage {
     public ContraptionWorldCreatePacket(ContraptionWorld sourceWorld) {
         this.subWorldID = sourceWorld.getSubWorldID();
         this.subWorldType = SubWorldTypeManager.getTypeID(sourceWorld.getSubWorldType());
+        this.subworldData = ((SubWorldServer) sourceWorld)
+            .getUpdatePacket(((SubWorldServer) sourceWorld), 1 | 2 | 4 | 8 | 16);
         this.contraptionData = sourceWorld.getContraption()
             .writeNBT(true);
-        if (sourceWorld != null) {
-            subWorldType = SubWorldTypeManager.getTypeID(sourceWorld.getSubWorldType());
-            subworldData = ((SubWorldServer) sourceWorld)
-                .getUpdatePacket(((SubWorldServer) sourceWorld), 1 | 2 | 4 | 8 | 16);
-        }
     }
 
     @Override
