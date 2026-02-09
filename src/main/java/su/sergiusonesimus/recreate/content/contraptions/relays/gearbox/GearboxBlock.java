@@ -5,6 +5,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -97,11 +98,15 @@ public class GearboxBlock extends RotatedPillarKineticBlock implements ITE<Gearb
 
     @Override
     public void onBlockPlacedBy(World worldIn, int x, int y, int z, EntityLivingBase placer, ItemStack itemIn) {
-        Axis preferredAxis = Direction.getNearestLookingDirection(placer)
-            .getAxis();
         int meta = worldIn.getBlockMetadata(x, y, z);
-        if (preferredAxis != null && (placer == null || !placer.isSneaking())) {
-            meta = this.getMetaFromAxis(preferredAxis);
+        if (placer != null) {
+            Vec3 lookVec = placer.getLookVec();
+            Axis placerAxis = Direction.getNearest(lookVec.xCoord, 0, lookVec.zCoord)
+                .getAxis();
+            placerAxis = placer.isSneaking() ? Axis.Y
+                : placerAxis.getPositivePerpendicular()
+                    .getAxis();
+            meta = this.getMetaFromAxis(placerAxis);
         }
         worldIn.setBlockMetadataWithNotify(x, y, z, meta, 2);
     }
