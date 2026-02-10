@@ -31,6 +31,7 @@ import su.sergiusonesimus.recreate.ClientProxy;
 import su.sergiusonesimus.recreate.ReCreate;
 import su.sergiusonesimus.recreate.content.contraptions.KineticDebugger;
 import su.sergiusonesimus.recreate.content.contraptions.base.IRotate;
+import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.chassis.ChassisRangeDisplay;
 import su.sergiusonesimus.recreate.content.contraptions.goggles.GoggleOverlayRenderer;
 import su.sergiusonesimus.recreate.foundation.config.AllConfigs;
 import su.sergiusonesimus.recreate.foundation.item.ItemDescription;
@@ -76,7 +77,7 @@ public class ClientEvents {
         // FilteringRenderer.tick();
         // LinkRenderer.tick();
         ScrollValueRenderer.tick();
-        // ChassisRangeDisplay.tick();
+        ChassisRangeDisplay.tick();
         // EdgeInteractionRenderer.tick();
         // WorldshaperRenderHandler.tick();
         // CouplingHandlerClient.tick();
@@ -142,6 +143,7 @@ public class ClientEvents {
     // PonderTooltipHandler.handleTooltipColor(event);
     // }
 
+    @SuppressWarnings("static-access")
     @SubscribeEvent
     public void addToItemTooltip(ItemTooltipEvent event) {
         if (!AllConfigs.CLIENT.tooltips) return;

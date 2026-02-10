@@ -8,7 +8,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.opengl.GL11;
 
 import su.sergiusonesimus.metaworlds.util.Direction.Axis;
-import su.sergiusonesimus.recreate.AllSpecialTextures;
 
 public class AABBOutline extends Outline {
 
@@ -29,7 +28,6 @@ public class AABBOutline extends Outline {
         double inflator = noCull ? -1 / 128d : 1 / 128d;
         bb = bb.expand(inflator, inflator, inflator);
         noCull |= params.disableCull;
-        AllSpecialTextures.BLANK.bind();
 
         Vec3 xyz = Vec3.createVectorHelper(bb.minX, bb.minY, bb.minZ);
         Vec3 Xyz = Vec3.createVectorHelper(bb.maxX, bb.minY, bb.minZ);

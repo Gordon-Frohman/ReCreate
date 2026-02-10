@@ -34,6 +34,8 @@ import su.sergiusonesimus.recreate.AllItems;
 import su.sergiusonesimus.recreate.AllSounds;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.BlockMovementChecks;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.bearing.BearingBlock;
+import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.chassis.AbstractChassisBlock;
+import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.piston.MechanicalPistonBlock;
 import su.sergiusonesimus.recreate.foundation.networking.AllPackets;
 import su.sergiusonesimus.recreate.foundation.utility.BlockFace;
 
@@ -204,10 +206,10 @@ public class SuperGlueEntity extends Entity implements IEntityAdditionalSpawnDat
     public static boolean isSideSticky(World world, int x, int y, int z, Direction direction) {
         Block block = world.getBlock(x, y, z);
         int meta = world.getBlockMetadata(x, y, z);
+
+        if (block instanceof MechanicalPistonBlock piston && MechanicalPistonBlock.isStickyPiston(block))
+            return piston.getDirection(meta) == direction;
         // TODO
-        // if (AllBlocks.STICKY_MECHANICAL_PISTON.has(state))
-        // return state.getValue(DirectionalKineticBlock.FACING) == direction;
-        //
         // if (AllBlocks.STICKER.has(state))
         // return state.getValue(DirectionalBlock.FACING) == direction;
         //
@@ -225,13 +227,12 @@ public class SuperGlueEntity extends Entity implements IEntityAdditionalSpawnDat
         if (block instanceof BearingBlock bearing) {
             return bearing.getDirection(meta) == direction;
         }
-        // TODO
-        // if (state.getBlock() instanceof AbstractChassisBlock) {
-        // BooleanProperty glueableSide = ((AbstractChassisBlock) state.getBlock()).getGlueableSide(state, direction);
-        // if (glueableSide == null)
-        // return false;
-        // return state.getValue(glueableSide);
-        // }
+
+        if (block instanceof AbstractChassisBlock chassis) {
+            Boolean glueableSide = chassis.getGlueableSide(world, x, y, z, direction);
+            if (glueableSide == null) return false;
+            return glueableSide.booleanValue();
+        }
 
         return false;
     }
@@ -263,7 +264,7 @@ public class SuperGlueEntity extends Entity implements IEntityAdditionalSpawnDat
             if (heldItem == null || heldItem.getItem() != AllItems.super_glue) return true;
         }
 
-        if (isEntityAlive() && worldObj.isRemote) {
+        if (isEntityAlive() && !worldObj.isRemote) {
             onBroken(source.getEntity());
             kill();
             performHurtAnimation();

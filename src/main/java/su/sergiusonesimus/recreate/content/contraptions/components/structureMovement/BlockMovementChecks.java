@@ -20,6 +20,7 @@ import net.minecraft.block.BlockSign;
 import net.minecraft.block.BlockTorch;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 
 import su.sergiusonesimus.metaworlds.util.BlockVolatilityMap;
@@ -29,6 +30,7 @@ import su.sergiusonesimus.recreate.content.contraptions.components.structureMove
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.bearing.SailBlock;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.bearing.WindmillBearingBlock;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.bearing.WindmillBearingTileEntity;
+import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.chassis.AbstractChassisBlock;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.piston.MechanicalPistonBlock;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.piston.MechanicalPistonBlock.PistonState;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.piston.MechanicalPistonHeadBlock;
@@ -76,6 +78,10 @@ public class BlockMovementChecks {
 
     // Actual check methods
 
+    public static boolean isMovementNecessary(Block block, int meta, World world, ChunkCoordinates blockPos) {
+        return isMovementNecessary(block, meta, world, blockPos.posX, blockPos.posY, blockPos.posZ);
+    }
+
     public static boolean isMovementNecessary(Block block, int meta, World world, int x, int y, int z) {
         for (MovementNecessaryCheck check : MOVEMENT_NECESSARY_CHECKS) {
             CheckResult result = check.isMovementNecessary(block, meta, world, x, y, z);
@@ -86,6 +92,10 @@ public class BlockMovementChecks {
         return isMovementNecessaryFallback(block, meta, world, x, y, z);
     }
 
+    public static boolean isMovementAllowed(Block block, int meta, World world, ChunkCoordinates blockPos) {
+        return isMovementAllowed(block, meta, world, blockPos.posX, blockPos.posY, blockPos.posZ);
+    }
+
     public static boolean isMovementAllowed(Block block, int meta, World world, int x, int y, int z) {
         for (MovementAllowedCheck check : MOVEMENT_ALLOWED_CHECKS) {
             CheckResult result = check.isMovementAllowed(block, meta, world, x, y, z);
@@ -94,6 +104,14 @@ public class BlockMovementChecks {
             }
         }
         return isMovementAllowedFallback(block, meta, world, x, y, z);
+    }
+
+    /**
+     * Attached blocks will move if blocks they are attached to are moved
+     */
+    public static boolean isBlockAttachedTowards(Block block, int meta, World world, ChunkCoordinates blockPos,
+        Direction direction) {
+        return isBlockAttachedTowards(block, meta, world, blockPos.posX, blockPos.posY, blockPos.posZ, direction);
     }
 
     /**
@@ -137,8 +155,7 @@ public class BlockMovementChecks {
     }
 
     private static boolean isMovementAllowedFallback(Block block, int meta, World world, int x, int y, int z) {
-        // TODO
-        // if (block instanceof AbstractChassisBlock) return true;
+        if (block instanceof AbstractChassisBlock) return true;
         if (block.getBlockHardness(world, x, y, z) < 0) return false;
         if (block.getMobilityFlag() == 2) return false;
         if (ContraptionMovementSetting.get(block) == ContraptionMovementSetting.UNMOVABLE) return false;

@@ -1,6 +1,9 @@
 package su.sergiusonesimus.recreate;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 
 import net.minecraft.util.ResourceLocation;
@@ -22,13 +25,16 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
+import su.sergiusonesimus.metaworlds.api.SubWorld;
 import su.sergiusonesimus.metaworlds.util.Direction;
+import su.sergiusonesimus.metaworlds.util.Direction.Axis;
 import su.sergiusonesimus.metaworlds.util.RotationHelper;
 import su.sergiusonesimus.recreate.content.contraptions.TorquePropagator;
 import su.sergiusonesimus.recreate.content.contraptions.components.motor.CreativeMotorTileEntity;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.AllSubWorldTypes;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.bearing.MechanicalBearingTileEntity;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.bearing.WindmillBearingTileEntity;
+import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.chassis.ChassisTileEntity;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.glue.SuperGlueEntity;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.glue.SuperGlueHandler;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.piston.MechanicalPistonTileEntity;
@@ -42,6 +48,7 @@ import su.sergiusonesimus.recreate.events.CommonEvents;
 import su.sergiusonesimus.recreate.foundation.config.AllConfigs;
 import su.sergiusonesimus.recreate.foundation.data.ReCreateRegistrate;
 import su.sergiusonesimus.recreate.foundation.networking.AllPackets;
+import su.sergiusonesimus.recreate.foundation.utility.Iterate;
 
 @Mod(modid = Tags.MODID, version = ReCreate.VERSION, name = Tags.MODNAME, acceptedMinecraftVersions = "[1.7.10]")
 public class ReCreate {
@@ -160,6 +167,8 @@ public class ReCreate {
 
         GameRegistry.registerTileEntity(WindmillBearingTileEntity.class, "Windmill Bearing");
         GameRegistry.registerTileEntity(MechanicalBearingTileEntity.class, "Mechanical Bearing");
+
+        GameRegistry.registerTileEntity(ChassisTileEntity.class, "Chassis");
     }
 
     private void registerRotators() {
@@ -214,6 +223,32 @@ public class ReCreate {
             AllBlocks.unpowered_clutch,
             AllBlocks.powered_gearshift,
             AllBlocks.unpowered_gearshift);
+
+        // Chassis
+        RotationHelper.registerBlocks("log", AllBlocks.linear_chassis, AllBlocks.radial_chassis);
+        RotationHelper.registerTileEntities("chassis", ChassisTileEntity.class);
+        RotationHelper.registerTileEntityRotator("chassis", (te, world) -> {
+            ChassisTileEntity chassis = (ChassisTileEntity) te;
+            SubWorld subworld = (SubWorld) world;
+            Map<Direction, Boolean> oldDirections = new HashMap<Direction, Boolean>();
+            for (Direction dir : Iterate.directions) {
+                Boolean glueableSide = chassis.getGlueableSide(dir);
+                if (glueableSide != null) oldDirections.put(dir, glueableSide);
+            }
+            int rotationsX = (Math.round((float) -subworld.getRotationRoll() % 360 / 90) + 4) % 4;
+            int rotationsY = (Math.round((float) -subworld.getRotationYaw() % 360 / 90) + 4) % 4;
+            int rotationsZ = (Math.round((float) -subworld.getRotationPitch() % 360 / 90) + 4) % 4;
+
+            for (Entry<Direction, Boolean> entry : oldDirections.entrySet()) {
+                Direction dir = entry.getKey();
+                Direction rotatedFacing = dir;
+                int i;
+                for (i = 0; i < rotationsX; i++) rotatedFacing = rotatedFacing.rotateAround(Axis.X);
+                for (i = 0; i < rotationsY; i++) rotatedFacing = rotatedFacing.rotateAround(Axis.Y);
+                for (i = 0; i < rotationsZ; i++) rotatedFacing = rotatedFacing.rotateAround(Axis.Z);
+                chassis.setGlueableSide(rotatedFacing, entry.getValue());
+            }
+        });
     }
 
     public static ResourceLocation asResource(String path) {

@@ -13,6 +13,8 @@ import su.sergiusonesimus.recreate.content.contraptions.components.motor.Creativ
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.bearing.MechanicalBearingBlock;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.bearing.SailBlock;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.bearing.WindmillBearingBlock;
+import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.chassis.LinearChassisBlock;
+import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.chassis.RadialChassisBlock;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.piston.MechanicalPistonBlock;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.piston.MechanicalPistonHeadBlock;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.piston.PistonExtensionPoleBlock;
@@ -51,6 +53,9 @@ public class AllBlocks {
 
     public static Block windmill_bearing;
     public static Block mechanical_bearing;
+
+    public static Block linear_chassis;
+    public static Block radial_chassis;
 
     public static Block sail_frame;
     public static Block[] sails = new Block[16];
@@ -138,6 +143,14 @@ public class AllBlocks {
             .setCreativeTab(AllItems.BASE_CREATIVE_TAB);
         registerMyBlock(mechanical_bearing);
         BlockStressDefaults.setImpact(mechanical_bearing, 4.0);
+
+        linear_chassis = new LinearChassisBlock(Material.wood).setBlockName("linear_chassis")
+            .setCreativeTab(AllItems.BASE_CREATIVE_TAB);
+        registerMyBlock(linear_chassis);
+
+        radial_chassis = new RadialChassisBlock(Material.wood).setBlockName("radial_chassis")
+            .setCreativeTab(AllItems.BASE_CREATIVE_TAB);
+        registerMyBlock(radial_chassis);
 
         sail_frame = SailBlock.frame()
             .setBlockName("sail_frame")

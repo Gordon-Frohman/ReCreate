@@ -237,7 +237,6 @@ public abstract class SmartTileEntity extends SyncedTileEntity implements IParti
         }
     }
 
-    @SuppressWarnings("deprecation")
     public void refreshBlockState() {
         this.blockMetadata = getWorldObj().getBlockMetadata(xCoord, yCoord, zCoord);
     }

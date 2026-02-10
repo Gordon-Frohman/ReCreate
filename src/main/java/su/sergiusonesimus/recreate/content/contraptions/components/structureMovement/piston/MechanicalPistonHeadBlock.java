@@ -33,7 +33,6 @@ import su.sergiusonesimus.recreate.ReCreate;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.piston.MechanicalPistonBlock.PistonState;
 import su.sergiusonesimus.recreate.foundation.block.WrenchableDirectionalBlock;
 import su.sergiusonesimus.recreate.util.BlockHelper;
-import su.sergiusonesimus.recreate.util.OreDictHelper;
 
 public class MechanicalPistonHeadBlock extends WrenchableDirectionalBlock {
 
@@ -79,7 +78,7 @@ public class MechanicalPistonHeadBlock extends WrenchableDirectionalBlock {
         if (player.isPlayerSleeping() || player.isRiding() || player.isSneaking()) return false;
         ItemStack heldItem = player.getHeldItem();
         int meta = worldIn.getBlockMetadata(x, y, z);
-        if (!OreDictHelper.containsMatch(false, OreDictionary.getOres("slimeball"), heldItem) || this.isSticky(meta))
+        if (!OreDictionary.containsMatch(false, OreDictionary.getOres("slimeball"), heldItem) || this.isSticky(meta))
             return false;
         worldIn.setBlockMetadataWithNotify(x, y, z, meta + 6, 2);
         Direction direction = getDirection(meta);

@@ -54,6 +54,8 @@ import su.sergiusonesimus.recreate.AllSounds;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.bearing.MechanicalBearingBlock;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.bearing.StabilizedContraption;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.bearing.WindmillBearingBlock;
+import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.chassis.AbstractChassisBlock;
+import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.chassis.ChassisTileEntity;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.glue.SuperGlueEntity;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.glue.SuperGlueHandler;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.piston.MechanicalPistonBlock;
@@ -380,11 +382,10 @@ public abstract class Contraption {
         if (!BlockMovementChecks.isMovementNecessary(block, meta, world, posX, posY, posZ)) return true;
         if (!movementAllowed(block, meta, world, posX, posY, posZ))
             throw AssemblyException.unmovableBlock(posX, posY, posZ, block, meta);
+
+        if (block instanceof AbstractChassisBlock
+            && !moveChassis(world, posX, posY, posZ, forcedDirection, frontier, visited)) return false;
         // TODO
-        // if (block instanceof AbstractChassisBlock
-        // && !moveChassis(world, posX, posY, posZ, forcedDirection, frontier, visited))
-        // return false;
-        //
         // if (AllBlocks.BELT.has(state))
         // moveBelt(posX, posY, posZ, frontier, visited, state);
         //
@@ -678,23 +679,17 @@ public abstract class Contraption {
         return true;
     }
 
-    // TODO
-    // private boolean moveChassis(World world, int x, int y, int z, Direction movementDirection,
-    // Queue<ChunkCoordinates> frontier,
-    // Set<ChunkCoordinates> visited) {
-    // TileEntity te = world.getTileEntity(pos);
-    // if (!(te instanceof ChassisTileEntity))
-    // return false;
-    // ChassisTileEntity chassis = (ChassisTileEntity) te;
-    // chassis.addAttachedChasses(frontier, visited);
-    // List<ChunkCoordinates> includedBlockPositions = chassis.getIncludedBlockPositions(movementDirection, false);
-    // if (includedBlockPositions == null)
-    // return false;
-    // for (ChunkCoordinates pos : includedBlockPositions)
-    // if (!visited.contains(pos))
-    // frontier.add(pos);
-    // return true;
-    // }
+    private boolean moveChassis(World world, int x, int y, int z, Direction movementDirection,
+        Queue<ChunkCoordinates> frontier, Set<ChunkCoordinates> visited) {
+        TileEntity te = world.getTileEntity(x, y, z);
+        if (!(te instanceof ChassisTileEntity)) return false;
+        ChassisTileEntity chassis = (ChassisTileEntity) te;
+        chassis.addAttachedChasses(frontier, visited);
+        List<ChunkCoordinates> includedBlockPositions = chassis.getIncludedBlockPositions(movementDirection, false);
+        if (includedBlockPositions == null) return false;
+        for (ChunkCoordinates pos : includedBlockPositions) if (!visited.contains(pos)) frontier.add(pos);
+        return true;
+    }
 
     protected void addBlock(World world, int x, int y, int z) {
         ChunkCoordinates localPos = new ChunkCoordinates(x, y, z);

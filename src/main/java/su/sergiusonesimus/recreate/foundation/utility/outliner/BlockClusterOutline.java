@@ -13,6 +13,7 @@ import su.sergiusonesimus.metaworlds.util.Direction;
 import su.sergiusonesimus.metaworlds.util.Direction.Axis;
 import su.sergiusonesimus.metaworlds.util.Direction.AxisDirection;
 import su.sergiusonesimus.recreate.AllSpecialTextures;
+import su.sergiusonesimus.recreate.foundation.render.RenderTypes;
 import su.sergiusonesimus.recreate.foundation.utility.Iterate;
 import su.sergiusonesimus.recreate.util.VecHelper;
 
@@ -41,14 +42,18 @@ public class BlockClusterOutline extends Outline {
         Optional<AllSpecialTextures> faceTexture = params.faceTexture;
         if (!faceTexture.isPresent()) return;
 
+        RenderTypes.setupOutlineTranslucent(
+            faceTexture.get()
+                .getLocation(),
+            true);
+
         cluster.visibleFaces.forEach((face, axisDirection) -> {
             Direction direction = Direction.get(axisDirection, face.axis);
-            ChunkCoordinates directionNormal = direction.getNormal();
-            int x = directionNormal.posX;
-            int y = directionNormal.posY;
-            int z = directionNormal.posZ;
+            int x = face.posX;
+            int y = face.posY;
+            int z = face.posZ;
             if (axisDirection == AxisDirection.POSITIVE) {
-                directionNormal = direction.getOpposite()
+                ChunkCoordinates directionNormal = direction.getOpposite()
                     .getNormal();
                 x += directionNormal.posX;
                 y += directionNormal.posY;
@@ -56,6 +61,8 @@ public class BlockClusterOutline extends Outline {
             }
             renderBlockFace(x, y, z, direction);
         });
+
+        RenderTypes.cleanUp();
     }
 
     protected void renderBlockFace(int x, int y, int z, Direction face) {
@@ -177,11 +184,10 @@ public class BlockClusterOutline extends Outline {
                 && this.posZ == other.posZ;
         }
 
-        // TODO Not needed?
-        // @Override
-        // public int hashCode() {
-        // return this.pos.hashCode() * 31 + axis.ordinal();
-        // }
+        @Override
+        public int hashCode() {
+            return (this.posX + this.posZ << 8 + this.posY << 16) * 31 + axis.ordinal();
+        }
     }
 
 }

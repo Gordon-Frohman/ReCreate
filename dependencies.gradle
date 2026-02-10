@@ -35,6 +35,7 @@
  */
 dependencies {
 	implementation("com.github.Gordon-Frohman:tebreaker:1.1.0") {transitive = false} // Clientside mod, disable when testing on dedicated servers
+	implementation("com.github.GTNewHorizons:Chisel:2.17.14-GTNH:dev") {transitive = false}
 	implementation("com.github.Gordon-Frohman:metaworlds-mixins:1.5.1y")
     implementation("com.github.GTNewHorizons:NotEnoughItems:2.7.49-GTNH:dev")
     runtimeOnlyNonPublishable("com.github.GTNewHorizons:Angelica:1.0.0-beta44:dev")

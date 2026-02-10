@@ -2,7 +2,6 @@ package su.sergiusonesimus.recreate.foundation.utility.outliner;
 
 import net.minecraft.util.Vec3;
 
-import su.sergiusonesimus.recreate.AllSpecialTextures;
 import su.sergiusonesimus.recreate.util.ReCreateMath;
 
 public class LineOutline extends Outline {
@@ -18,7 +17,6 @@ public class LineOutline extends Outline {
 
     @Override
     public void render(float pt) {
-        AllSpecialTextures.BLANK.bind();
         renderCuboidLine(start, end);
     }
 

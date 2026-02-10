@@ -16,6 +16,7 @@ public class CreativeMotorTileEntity extends GeneratingKineticTileEntity {
     public static final int DEFAULT_SPEED = 16;
     protected ScrollValueBehaviour generatedSpeed;
 
+    @SuppressWarnings("static-access")
     @Override
     public void addBehaviours(List<TileEntityBehaviour> behaviours) {
         super.addBehaviours(behaviours);

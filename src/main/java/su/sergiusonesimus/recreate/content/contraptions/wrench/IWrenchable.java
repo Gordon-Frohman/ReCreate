@@ -7,6 +7,7 @@ import net.minecraft.world.World;
 
 import su.sergiusonesimus.metaworlds.util.Direction;
 import su.sergiusonesimus.metaworlds.util.Direction.Axis;
+import su.sergiusonesimus.metaworlds.util.Direction.AxisDirection;
 import su.sergiusonesimus.recreate.AllSounds;
 import su.sergiusonesimus.recreate.ReCreate;
 import su.sergiusonesimus.recreate.content.contraptions.base.DirectionalKineticBlock;
@@ -82,15 +83,16 @@ public interface IWrenchable {
         if (!(block instanceof DirectionalKineticBlock)) return originalMeta;
 
         Direction originalFacing = this.getDirection(originalMeta);
-        Axis rotationAxis = Direction.from3DDataValue(face)
-            .getAxis();
+        Direction rotationDirection = Direction.from3DDataValue(face);
+        Axis rotationAxis = rotationDirection.getAxis();
 
         if (originalFacing.getAxis() == rotationAxis) {
             if (block instanceof IAxisAlongFirstCoordinate aafc) return aafc.cycleMetadata(originalMeta);
             else return originalMeta;
         } else {
-            Direction newFacing = this.getDirection(newMeta)
-                .rotateAround(rotationAxis);
+            int rotCount = rotationDirection.getAxisDirection() == AxisDirection.POSITIVE ? 1 : 3;
+            Direction newFacing = this.getDirection(newMeta);
+            for (int i = 0; i < rotCount; i++) newFacing = newFacing.rotateAround(rotationAxis);
             newMeta = this.getMetaFromDirection(newFacing);
             if (block instanceof IAxisAlongFirstCoordinate aafc) {
                 boolean axisAlongFirst = aafc.isAxisAlongFirstCoordinate(originalMeta);

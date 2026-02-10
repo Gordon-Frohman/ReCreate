@@ -21,6 +21,15 @@ public class BearingTileEntityRenderer extends KineticTileEntityRenderer {
         MechanicalBearingTileEntity mbte = (MechanicalBearingTileEntity) tileEntity;
         float topAngle = mbte.movedContraption == null ? mbte.getInterpolatedAngle(partialTicks - 1f)
             : (float) mbte.movedContraption.getAngle();
+        switch (direction) {
+            default:
+                break;
+            case DOWN:
+            case EAST:
+            case NORTH:
+                topAngle = -topAngle;
+                break;
+        }
         model.setRotations(
             getAngleForTe(mbte, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, direction.getAxis()),
             topAngle / 180f * (float) Math.PI);

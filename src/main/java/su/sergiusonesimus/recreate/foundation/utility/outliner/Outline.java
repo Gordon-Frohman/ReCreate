@@ -14,6 +14,7 @@ import org.lwjgl.opengl.GL11;
 import su.sergiusonesimus.metaworlds.util.Direction;
 import su.sergiusonesimus.metaworlds.util.Direction.Axis;
 import su.sergiusonesimus.recreate.AllSpecialTextures;
+import su.sergiusonesimus.recreate.foundation.render.RenderTypes;
 import su.sergiusonesimus.recreate.foundation.utility.Color;
 import su.sergiusonesimus.recreate.util.VecHelper;
 
@@ -57,6 +58,8 @@ public abstract class Outline {
     public void renderAACuboidLine(Vec3 start, Vec3 end) {
         float lineWidth = params.getLineWidth();
         if (lineWidth == 0) return;
+
+        RenderTypes.setupOutlineSolid();
 
         Vec3 diff = start.subtract(end);
         if (diff.xCoord + diff.yCoord + diff.zCoord < 0) {
@@ -115,6 +118,8 @@ public abstract class Outline {
         vec = VecHelper.rotate(vec, -90, axis);
         face = Direction.getNearest(vec.xCoord, vec.yCoord, vec.zCoord);
         putQuad(a4, b4, b1, a1, face);
+
+        RenderTypes.cleanUp();
     }
 
     public void putQuad(Vec3 v1, Vec3 v2, Vec3 v3, Vec3 v4, Direction normal) {

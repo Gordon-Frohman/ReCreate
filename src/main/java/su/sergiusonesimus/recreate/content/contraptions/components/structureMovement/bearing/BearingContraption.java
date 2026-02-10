@@ -96,9 +96,11 @@ public class BearingContraption extends ControlledContraption {
     @Override
     public boolean canBeStabilized(Direction facing, int localX, int localY, int localZ) {
         ChunkCoordinates center = this.getCenterBlock();
-        if (facing.getOpposite() == this.facing && localX == center.posX
-            && localY == center.posY
-            && localZ == center.posZ) return false;
+        if (facing == null || center == null
+            || (facing.getOpposite() == this.facing && localX == center.posX
+                && localY == center.posY
+                && localZ == center.posZ))
+            return false;
         return facing.getAxis() == this.facing.getAxis();
     }
 

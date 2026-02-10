@@ -35,7 +35,6 @@ import su.sergiusonesimus.recreate.foundation.block.ITE;
 import su.sergiusonesimus.recreate.foundation.config.AllConfigs;
 import su.sergiusonesimus.recreate.foundation.utility.Lang;
 import su.sergiusonesimus.recreate.util.BlockHelper;
-import su.sergiusonesimus.recreate.util.OreDictHelper;
 
 public class MechanicalPistonBlock extends DirectionalAxisKineticBlock implements ITE<MechanicalPistonTileEntity> {
 
@@ -133,7 +132,7 @@ public class MechanicalPistonBlock extends DirectionalAxisKineticBlock implement
         float subY, float subZ) {
         if (player.isPlayerSleeping() || player.isRiding() || player.isSneaking()) return false;
         ItemStack heldItem = player.getHeldItem();
-        if (!OreDictHelper.containsMatch(false, OreDictionary.getOres("slimeball"), heldItem)) {
+        if (!OreDictionary.containsMatch(false, OreDictionary.getOres("slimeball"), heldItem)) {
             if (heldItem == null) {
                 withTileEntityDo(worldIn, x, y, z, te -> te.assembleNextTick = true);
                 return true;
