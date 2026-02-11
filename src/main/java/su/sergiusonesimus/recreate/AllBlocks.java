@@ -14,6 +14,7 @@ import su.sergiusonesimus.recreate.content.contraptions.components.structureMove
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.bearing.SailBlock;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.bearing.WindmillBearingBlock;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.chassis.LinearChassisBlock;
+import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.chassis.LinearChassisItemBlock;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.chassis.RadialChassisBlock;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.piston.MechanicalPistonBlock;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.piston.MechanicalPistonHeadBlock;
@@ -146,7 +147,7 @@ public class AllBlocks {
 
         linear_chassis = new LinearChassisBlock(Material.wood).setBlockName("linear_chassis")
             .setCreativeTab(AllItems.BASE_CREATIVE_TAB);
-        registerMyBlock(linear_chassis);
+        registerMyBlock(linear_chassis, LinearChassisItemBlock.class);
 
         radial_chassis = new RadialChassisBlock(Material.wood).setBlockName("radial_chassis")
             .setCreativeTab(AllItems.BASE_CREATIVE_TAB);
@@ -169,12 +170,14 @@ public class AllBlocks {
         }
     }
 
+    @SuppressWarnings("unused")
     private static void registerMyBlock(Block block, Class<? extends ItemBlock> pickup, BlockSlab singleSlab,
         BlockSlab doubleSlab, boolean isDouble) {
         GameRegistry.registerBlock(block, pickup, block.getUnlocalizedName(), singleSlab, doubleSlab, isDouble);
 
     }
 
+    @SuppressWarnings("unused")
     private static void registerMyBlock(Block block, Class<? extends ItemBlock> pickup, Block blockAgain,
         String[] names) {
         GameRegistry.registerBlock(block, pickup, block.getUnlocalizedName(), blockAgain, names);

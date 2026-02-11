@@ -131,7 +131,7 @@ public class LinearChassisBlock extends AbstractChassisBlock implements ICTMBloc
     }
 
     public int damageDropped(int meta) {
-        return meta & 3;
+        return meta & 1;
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -150,72 +150,5 @@ public class LinearChassisBlock extends AbstractChassisBlock implements ICTMBloc
     public LinearChassisSubmapManager getManager(int meta) {
         return manager;
     }
-
-    // TODO
-    // public static class ChassisCTBehaviour extends ConnectedTextureBehaviour {
-    //
-    // @Override
-    // public CTSpriteShiftEntry get(BlockState state, Direction direction) {
-    // Block block = state.getBlock();
-    // BooleanProperty glueableSide = ((LinearChassisBlock) block).getGlueableSide(state, direction);
-    // if (glueableSide == null)
-    // return AllBlocks.LINEAR_CHASSIS.has(state) ? AllSpriteShifts.CHASSIS_SIDE
-    // : AllSpriteShifts.SECONDARY_CHASSIS_SIDE;
-    // return state.getValue(glueableSide) ? AllSpriteShifts.CHASSIS_STICKY : AllSpriteShifts.CHASSIS;
-    // }
-    //
-    // @Override
-    // protected Direction getUpDirection(BlockAndTintGetter reader, BlockPos pos, BlockState state, Direction face) {
-    // Axis axis = state.getValue(AXIS);
-    // if (face.getAxis() == axis)
-    // return super.getUpDirection(reader, pos, state, face);
-    // return Direction.get(AxisDirection.POSITIVE, axis);
-    // }
-    //
-    // @Override
-    // protected Direction getRightDirection(BlockAndTintGetter reader, BlockPos pos, BlockState state, Direction face)
-    // {
-    // Axis axis = state.getValue(AXIS);
-    // return axis != face.getAxis() && axis.isHorizontal() ? (face.getAxis()
-    // .isHorizontal() ? Direction.DOWN : (axis == Axis.X ? Direction.NORTH : Direction.EAST))
-    // : super.getRightDirection(reader, pos, state, face);
-    // }
-    //
-    // @Override
-    // protected boolean reverseUVsHorizontally(BlockState state, Direction face) {
-    // Axis axis = state.getValue(AXIS);
-    // boolean side = face.getAxis() != axis;
-    // if (side && axis == Axis.X && face.getAxis()
-    // .isHorizontal())
-    // return true;
-    // return super.reverseUVsHorizontally(state, face);
-    // }
-    //
-    // @Override
-    // protected boolean reverseUVsVertically(BlockState state, Direction face) {
-    // return super.reverseUVsVertically(state, face);
-    // }
-    //
-    // @Override
-    // public boolean reverseUVs(BlockState state, Direction face) {
-    // Axis axis = state.getValue(AXIS);
-    // boolean end = face.getAxis() == axis;
-    // if (end && axis.isHorizontal() && (face.getAxisDirection() == AxisDirection.POSITIVE))
-    // return true;
-    // if (!end && axis.isHorizontal() && face == Direction.DOWN)
-    // return true;
-    // return super.reverseUVs(state, face);
-    // }
-    //
-    // @Override
-    // public boolean connectsTo(BlockState state, BlockState other, BlockAndTintGetter reader, BlockPos pos,
-    // BlockPos otherPos, Direction face) {
-    // Axis axis = state.getValue(AXIS);
-    // boolean superConnect = face.getAxis() == axis ? super.connectsTo(state, other, reader, pos, otherPos, face)
-    // : sameKind(state, other);
-    // return superConnect && axis == other.getValue(AXIS);
-    // }
-    //
-    // }
 
 }
