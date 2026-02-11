@@ -747,7 +747,6 @@ public abstract class Contraption {
     }
 
     public ChunkCoordinates getCenterBlock() {
-        if (this.contraptionWorld == null) return null;
         ContraptionWorld contraption = this.getContraptionWorld();
         return new ChunkCoordinates(
             MathHelper.floor_double(contraption.getCenterX()),
