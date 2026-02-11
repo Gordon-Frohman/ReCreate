@@ -386,6 +386,16 @@ public class SuperGlueEntity extends Entity implements IEntityAdditionalSpawnDat
         velocityChanged = true;
     }
 
+    /**
+     * Sets the position and rotation. Only difference from the other one is no bounding on the rotation. Args: posX,
+     * posY, posZ, yaw, pitch
+     */
+    @SideOnly(Side.CLIENT)
+    public void setPositionAndRotation2(double x, double y, double z, float yaw, float pitch, int rotationIncrements) {
+        this.setPosition(x, y, z);
+        this.setRotation(yaw, pitch);
+    }
+
     public float rotate(Rotation transformRotation) {
         if (this.getFacingDirection()
             .getAxis() != Direction.Axis.Y) {

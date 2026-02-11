@@ -40,7 +40,7 @@ public class SuperGlueItem extends Item {
         int dY = y + normal.posY;
         int dZ = z + normal.posZ;
 
-        if (player == null || !this.canPlace(player, item, x, y, z, side)) return false;
+        if (player == null || !this.canPlace(player, item, dX, dY, dZ, side)) return false;
 
         SuperGlueEntity entity = new SuperGlueEntity(world, dX, dY, dZ, direction);
         // TODO probably useless on 1.7.10
