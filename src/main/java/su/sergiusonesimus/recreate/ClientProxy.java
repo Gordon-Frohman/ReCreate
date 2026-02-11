@@ -51,6 +51,7 @@ import su.sergiusonesimus.recreate.events.ClientEvents;
 import su.sergiusonesimus.recreate.events.InputEvents;
 import su.sergiusonesimus.recreate.foundation.utility.ghost.GhostBlocks;
 import su.sergiusonesimus.recreate.foundation.utility.outliner.Outliner;
+import team.chisel.ctmlib.CTMRenderer;
 
 public class ClientProxy extends CommonProxy {
 
@@ -65,6 +66,7 @@ public class ClientProxy extends CommonProxy {
     int mechanicalPistonRenderID;
     int mechanicalPistonHeadRenderID;
     int pistonExtensionPoleRenderID;
+    int linearChassisRenderID;
 
     ModelBiped gogglesArmorModel;
 
@@ -144,6 +146,8 @@ public class ClientProxy extends CommonProxy {
         RenderingRegistry.registerBlockHandler(new MechanicalPistonHeadRenderBlock(mechanicalPistonHeadRenderID));
         pistonExtensionPoleRenderID = RenderingRegistry.getNextAvailableRenderId();
         RenderingRegistry.registerBlockHandler(new PistonExtensionPoleRenderBlock(pistonExtensionPoleRenderID));
+        linearChassisRenderID = RenderingRegistry.getNextAvailableRenderId();
+        RenderingRegistry.registerBlockHandler(new CTMRenderer(linearChassisRenderID));
 
         // armor model
         gogglesArmorModel = new GogglesModel();
@@ -247,6 +251,10 @@ public class ClientProxy extends CommonProxy {
 
     public int getPistonExtensionPoleBlockRenderID() {
         return pistonExtensionPoleRenderID;
+    }
+
+    public int getLinearChassisBlockRenderID() {
+        return linearChassisRenderID;
     }
 
     public ModelBiped getGogglesArmorModel() {

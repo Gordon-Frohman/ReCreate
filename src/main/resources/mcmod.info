@@ -13,7 +13,7 @@
 		"logoFile": "",
 		"screenshots": [],
 		"parent": "",
-		"requiredMods": ["metaworlds@[1.3.1,)"],
+		"requiredMods": ["metaworlds@[1.5.0,)"],
 		"dependencies": ["metaworlds"],
 		"dependants": [],
 		"useDependencyInformation": true

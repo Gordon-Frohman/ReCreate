@@ -19,13 +19,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 import su.sergiusonesimus.metaworlds.util.Direction;
 import su.sergiusonesimus.recreate.AllBlocks;
 import su.sergiusonesimus.recreate.ReCreate;
+import team.chisel.ctmlib.ICTMBlock;
 
-public class LinearChassisBlock extends AbstractChassisBlock {
+public class LinearChassisBlock extends AbstractChassisBlock implements ICTMBlock<LinearChassisSubmapManager> {
 
-    public static IIcon chassisEnd;
-    public static IIcon chassisEndSticky;
-    public static IIcon chassisSide1;
-    public static IIcon chassisSide2;
+    @SideOnly(Side.CLIENT)
+    private LinearChassisSubmapManager manager;
 
     public LinearChassisBlock(Material material) {
         super(material);
@@ -68,7 +67,8 @@ public class LinearChassisBlock extends AbstractChassisBlock {
     public Boolean getGlueableSide(IBlockAccess worldIn, int x, int y, int z, Direction face) {
         int meta = worldIn.getBlockMetadata(x, y, z);
         if (face.getAxis() != getAxis(meta)) return null;
-        return ((ChassisTileEntity) worldIn.getTileEntity(x, y, z)).getGlueableSide(face);
+        ChassisTileEntity te = (ChassisTileEntity) worldIn.getTileEntity(x, y, z);
+        return te == null ? null : te.getGlueableSide(face);
     }
 
     @Override
@@ -96,29 +96,38 @@ public class LinearChassisBlock extends AbstractChassisBlock {
         return block1 == block2 && (meta1 % 4) == (meta2 % 4);
     }
 
+    @Override
     @SideOnly(Side.CLIENT)
-    public IIcon getIcon(IBlockAccess worldIn, int x, int y, int z, int side) {
-        Boolean stickySide = this.getGlueableSide(worldIn, x, y, z, Direction.from3DDataValue(side));
-        if (stickySide != null && stickySide) return chassisEndSticky;
-        return super.getIcon(worldIn, x, y, z, side);
+    public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side) {
+        return manager.getIcon(world, x, y, z, side);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public IIcon getIcon(int side, int meta) {
+        return manager.getIcon(side, meta);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public int getRenderType() {
+        return ReCreate.proxy.getLinearChassisBlockRenderID();
     }
 
     @Override
     protected IIcon getSideIcon(int meta) {
-        return (meta & 3) == 1 ? chassisSide2 : chassisSide1;
+        return manager.getIcon(2, meta);
     }
 
     @Override
     protected IIcon getTopIcon(int meta) {
-        return chassisEnd;
+        return manager.getIcon(0, meta);
     }
 
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister reg) {
-        chassisEnd = reg.registerIcon(ReCreate.ID + ":linear_chassis_end");
-        chassisEndSticky = reg.registerIcon(ReCreate.ID + ":linear_chassis_end_sticky");
-        chassisSide1 = reg.registerIcon(ReCreate.ID + ":linear_chassis_side");
-        chassisSide2 = reg.registerIcon(ReCreate.ID + ":secondary_linear_chassis_side");
+        manager = new LinearChassisSubmapManager();
+        manager.registerIcons(ReCreate.ID, this, reg);
     }
 
     public int damageDropped(int meta) {
@@ -130,6 +139,16 @@ public class LinearChassisBlock extends AbstractChassisBlock {
     public void getSubBlocks(Item itemIn, CreativeTabs tab, List list) {
         list.add(new ItemStack(itemIn, 1, 0));
         list.add(new ItemStack(itemIn, 1, 1));
+    }
+
+    @Override
+    public LinearChassisSubmapManager getManager(IBlockAccess world, int x, int y, int z, int meta) {
+        return manager;
+    }
+
+    @Override
+    public LinearChassisSubmapManager getManager(int meta) {
+        return manager;
     }
 
     // TODO
