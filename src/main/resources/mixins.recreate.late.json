@@ -2,6 +2,7 @@
   "required": true,
   "minVersion": "0.8.5-GTNH",
   "package": "su.sergiusonesimus.recreate.zmixin.mixins",
+  "mixinPriority": 100,
   "refmap": "mixins.recreate.refmap.json",
   "target": "@env(DEFAULT)",
   "compatibilityLevel": "JAVA_8"
