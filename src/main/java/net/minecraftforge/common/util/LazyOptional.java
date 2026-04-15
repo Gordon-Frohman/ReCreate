@@ -67,7 +67,7 @@ public class LazyOptional<T> {
                 if (resolved == null) {
                     resolved = supplier.get();
                     if (resolved == null) {
-                        LOGGER.error("LazyOptional со поставщиком {} вернул null. Это недопустимо!", supplier);
+                        LOGGER.error("LazyOptional with provider {} returns null. This is unacceptable!", supplier);
                         isValid = false;
                     }
                 }

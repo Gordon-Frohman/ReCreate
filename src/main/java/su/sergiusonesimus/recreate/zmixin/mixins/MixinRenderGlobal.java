@@ -24,6 +24,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.sugar.Share;
+import com.llamalad7.mixinextras.sugar.ref.LocalDoubleRef;
+import com.llamalad7.mixinextras.sugar.ref.LocalFloatRef;
+import com.llamalad7.mixinextras.sugar.ref.LocalIntRef;
+import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 
 import su.sergiusonesimus.metaworlds.util.GeometryHelper3D;
 import su.sergiusonesimus.metaworlds.zmixin.interfaces.minecraft.util.IMixinAxisAlignedBB;
@@ -32,15 +37,8 @@ import su.sergiusonesimus.metaworlds.zmixin.interfaces.minecraft.world.IMixinWor
 import su.sergiusonesimus.recreate.foundation.utility.Iterate;
 import su.sergiusonesimus.recreate.zmixin.interfaces.IMixinBlock;
 
-@Mixin(RenderGlobal.class)
+@Mixin(value = RenderGlobal.class, priority = 1100)
 public class MixinRenderGlobal {
-
-    private MovingObjectPosition storedRayTraceHit;
-    private Block storedBlock;
-    private float storedF1;
-    private double storedD0;
-    private double storedD1;
-    private double storedD2;
 
     private static List<Segment> excludedSegments = new ArrayList<Segment>();
 
@@ -51,15 +49,19 @@ public class MixinRenderGlobal {
             target = "Lnet/minecraft/client/renderer/RenderGlobal;drawOutlinedBoundingBox(Lnet/minecraft/util/AxisAlignedBB;I)V",
             opcode = Opcodes.INVOKESTATIC,
             shift = Shift.BEFORE))
-    private void saveVariables(EntityPlayer entityPlayer, MovingObjectPosition rayTraceHit, int i,
+    private void shareVariables(EntityPlayer entityPlayer, MovingObjectPosition rayTraceHit, int i,
         float partialTickTime, CallbackInfo ci, @Local(name = "block") Block block, @Local(name = "f1") float f1,
-        @Local(name = "d0") double d0, @Local(name = "d1") double d1, @Local(name = "d2") double d2) {
-        storedRayTraceHit = rayTraceHit;
-        storedBlock = block;
-        storedF1 = f1;
-        storedD0 = d0;
-        storedD1 = d1;
-        storedD2 = d2;
+        @Local(name = "d0") double d0, @Local(name = "d1") double d1, @Local(name = "d2") double d2,
+        @Share("rayTraceHit") LocalRef<MovingObjectPosition> sharedRayTraceHit,
+        @Share("block") LocalRef<Block> sharedBlock, @Share("f1") LocalFloatRef sharedF1,
+        @Share("d0") LocalDoubleRef sharedD0, @Share("d1") LocalDoubleRef sharedD1,
+        @Share("d2") LocalDoubleRef sharedD2) {
+        sharedRayTraceHit.set(rayTraceHit);
+        sharedBlock.set(block);
+        sharedF1.set(f1);
+        sharedD0.set(d0);
+        sharedD1.set(d1);
+        sharedD2.set(d2);
     }
 
     @WrapOperation(
@@ -68,12 +70,21 @@ public class MixinRenderGlobal {
             value = "INVOKE",
             target = "Lnet/minecraft/client/renderer/RenderGlobal;drawOutlinedBoundingBox(Lnet/minecraft/util/AxisAlignedBB;I)V",
             opcode = Opcodes.INVOKESTATIC))
-    private void wrapDrawOutlinedBoundingBox(AxisAlignedBB aabb, int localI, Operation<Void> original) {
-        List<AxisAlignedBB> bbList = ((IMixinBlock) storedBlock).getSelectedBoundingBoxesList(
-            ((IMixinMovingObjectPosition) storedRayTraceHit).getWorld(),
-            storedRayTraceHit.blockX,
-            storedRayTraceHit.blockY,
-            storedRayTraceHit.blockZ);
+    private void wrapDrawOutlinedBoundingBox(AxisAlignedBB aabb, int localI, Operation<Void> original,
+        @Share("rayTraceHit") LocalRef<MovingObjectPosition> sharedRayTraceHit,
+        @Share("block") LocalRef<Block> sharedBlock, @Share("f1") LocalFloatRef sharedF1,
+        @Share("d0") LocalDoubleRef sharedD0, @Share("d1") LocalDoubleRef sharedD1,
+        @Share("d2") LocalDoubleRef sharedD2) {
+        MovingObjectPosition rayTraceHit = sharedRayTraceHit.get();
+        float f1 = sharedF1.get();
+        double d0 = sharedD0.get();
+        double d1 = sharedD1.get();
+        double d2 = sharedD2.get();
+        List<AxisAlignedBB> bbList = ((IMixinBlock) sharedBlock.get()).getSelectedBoundingBoxesList(
+            ((IMixinMovingObjectPosition) rayTraceHit).getWorld(),
+            rayTraceHit.blockX,
+            rayTraceHit.blockY,
+            rayTraceHit.blockZ);
         for (AxisAlignedBB partAABB : bbList) {
             boolean expandX = true;
             boolean expandY = true;
@@ -87,28 +98,25 @@ public class MixinRenderGlobal {
             for (AxisAlignedBB partAABB1 : bbList) {
                 if (partAABB1 == partAABB) continue;
                 findExcludedSegments(
-                    partAABB.expand(
-                        expandX ? (double) storedF1 : 0,
-                        expandY ? (double) storedF1 : 0,
-                        expandZ ? (double) storedF1 : 0),
-                    partAABB1.expand(
-                        expandX ? (double) storedF1 : 0,
-                        expandY ? (double) storedF1 : 0,
-                        expandZ ? (double) storedF1 : 0));
+                    partAABB.expand(expandX ? (double) f1 : 0, expandY ? (double) f1 : 0, expandZ ? (double) f1 : 0),
+                    partAABB1.expand(expandX ? (double) f1 : 0, expandY ? (double) f1 : 0, expandZ ? (double) f1 : 0),
+                    rayTraceHit,
+                    d0,
+                    d1,
+                    d2);
             }
             original.call(
-                ((IMixinAxisAlignedBB) partAABB.expand(
-                    expandX ? (double) storedF1 : 0,
-                    expandY ? (double) storedF1 : 0,
-                    expandZ ? (double) storedF1 : 0))
-                        .getTransformedToGlobalBoundingBox(((IMixinMovingObjectPosition) storedRayTraceHit).getWorld())
-                        .offset(-storedD0, -storedD1, -storedD2),
+                ((IMixinAxisAlignedBB) partAABB
+                    .expand(expandX ? (double) f1 : 0, expandY ? (double) f1 : 0, expandZ ? (double) f1 : 0))
+                        .getTransformedToGlobalBoundingBox(((IMixinMovingObjectPosition) rayTraceHit).getWorld())
+                        .offset(-d0, -d1, -d2),
                 -1);
         }
         excludedSegments.clear();
     }
 
-    private void findExcludedSegments(AxisAlignedBB aabb1, AxisAlignedBB aabb2) {
+    private void findExcludedSegments(AxisAlignedBB aabb1, AxisAlignedBB aabb2, MovingObjectPosition rayTraceHit,
+        double d0, double d1, double d2) {
         List<Segment> segments1 = new ArrayList<Segment>();
         List<Segment> segments2 = new ArrayList<Segment>();
         for (boolean first : Iterate.trueAndFalse) {
@@ -160,12 +168,12 @@ public class MixinRenderGlobal {
                             segmentEnd = end2 < end1 ? segment2.getEnd() : segment1.getEnd();
                         }
                         if (!segmentStart.equals(segmentEnd)) {
-                            Vec3 sStart = ((IMixinWorld) ((IMixinMovingObjectPosition) storedRayTraceHit).getWorld())
+                            Vec3 sStart = ((IMixinWorld) ((IMixinMovingObjectPosition) rayTraceHit).getWorld())
                                 .transformToGlobal(segmentStart.getX(), segmentStart.getY(), segmentStart.getZ())
-                                .addVector(-storedD0, -storedD1, -storedD2);
-                            Vec3 sEnd = ((IMixinWorld) ((IMixinMovingObjectPosition) storedRayTraceHit).getWorld())
+                                .addVector(-d0, -d1, -d2);
+                            Vec3 sEnd = ((IMixinWorld) ((IMixinMovingObjectPosition) rayTraceHit).getWorld())
                                 .transformToGlobal(segmentEnd.getX(), segmentEnd.getY(), segmentEnd.getZ())
-                                .addVector(-storedD0, -storedD1, -storedD2);
+                                .addVector(-d0, -d1, -d2);
                             segmentStart = GeometryHelper3D.transformVector(sStart);
                             segmentEnd = GeometryHelper3D.transformVector(sEnd);
                             line = new Line(segmentStart, segmentEnd);
@@ -177,22 +185,18 @@ public class MixinRenderGlobal {
         }
     }
 
-    private static int storedDrawMode;
-    private static int storedColor;
-    private static Double storedLastX = null;
-    private static Double storedLastY = null;
-    private static Double storedLastZ = null;
-
     @Inject(method = "drawOutlinedBoundingBox", at = @At(value = "HEAD"))
-    private static void storeColor(AxisAlignedBB aabb, int color, CallbackInfo ci) {
-        storedColor = color;
+    private static void shareColor(AxisAlignedBB aabb, int color, CallbackInfo ci,
+        @Share("color") LocalIntRef sharedColor) {
+        sharedColor.set(color);
     }
 
     @WrapOperation(
         method = "drawOutlinedBoundingBox",
         at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/Tessellator;startDrawing(I)V"))
-    private static void storeDrawMode(Tessellator tessellator, int mode, Operation<Void> original) {
-        storedDrawMode = mode;
+    private static void shareDrawMode(Tessellator tessellator, int mode, Operation<Void> original,
+        @Share("drawMode") LocalIntRef sharedDrawMode) {
+        sharedDrawMode.set(mode);
         original.call(tessellator, mode);
     }
 
@@ -200,30 +204,29 @@ public class MixinRenderGlobal {
         method = "drawOutlinedBoundingBox",
         at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/Tessellator;addVertex(DDD)V"))
     private static void checkForExcludedSegments(Tessellator tessellator, double x, double y, double z,
-        Operation<Void> original) {
-        if (storedLastX != null && storedLastY != null && storedLastZ != null) checkForExcludedSegments(
+        Operation<Void> original, @Share("color") LocalIntRef sharedColor,
+        @Share("drawMode") LocalIntRef sharedDrawMode, @Share("lastPos") LocalRef<Vec3> sharedLastPos) {
+        Vec3 lastPos = sharedLastPos.get();
+        if (lastPos != null) checkForExcludedSegments(
             tessellator,
-            storedDrawMode,
-            storedColor,
-            storedLastX,
-            storedLastY,
-            storedLastZ,
+            sharedDrawMode.get(),
+            sharedColor.get(),
+            lastPos.xCoord,
+            lastPos.yCoord,
+            lastPos.zCoord,
             x,
             y,
             z);
         original.call(tessellator, x, y, z);
-        storedLastX = x;
-        storedLastY = y;
-        storedLastZ = z;
+        sharedLastPos.set(Vec3.createVectorHelper(x, y, z));
     }
 
     @Inject(
         method = "drawOutlinedBoundingBox",
         at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/Tessellator;draw()I"))
-    private static void clearLastVertex(AxisAlignedBB aabb, int color, CallbackInfo ci) {
-        storedLastX = null;
-        storedLastY = null;
-        storedLastZ = null;
+    private static void clearLastVertex(AxisAlignedBB aabb, int color, CallbackInfo ci,
+        @Share("lastPos") LocalRef<Vec3> sharedLastPos) {
+        sharedLastPos.set(null);
     }
 
     private static void checkForExcludedSegments(Tessellator tessellator, int drawMode, int color, double startX,
