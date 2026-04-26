@@ -19,10 +19,7 @@ jobs:
       - name: Grant execute permission
         run: chmod +x gradlew
       - name: Build
-        env:
-          GH_USERNAME: Apostrcfo2
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: ./gradlew build -PghUsername=$GH_USERNAME -PghToken=$GH_TOKEN
+        run: ./gradlew build -PghUsername=Apostrcfo2 -PghToken=${{ secrets.GH_TOKEN }}
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
