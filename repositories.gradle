@@ -17,3 +17,4 @@ repositories {
             password = System.getenv("GH_TOKEN") ?: ""
         }
     }
+}
