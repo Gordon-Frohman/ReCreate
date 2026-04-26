@@ -19,6 +19,8 @@ A backport of the legendary [Create mod](https://github.com/Creators-of-Create/C
 > All credit goes to [Gordon-Frohman](https://github.com/Gordon-Frohman/ReCreate), the original author of this port.
 > This page exists for aesthetic and distribution purposes only.
 
+> 🚫 **PLEASE do not include this mod in any publicly available modpack** until an official release is made by the original author. This is a request from the developer himself to slow news spreading before the official launch. Once ReCreate is officially released, you are free to include it.
+
 </div>
 
 ---
@@ -40,7 +42,6 @@ The following machines and systems are currently present and functional:
 - Gearbox and Clutch — redirect and control rotation
 - Creative Motor — infinite rotation source for testing
 - Water Wheel — generate power from flowing water
-- Mechanical Fan — blow entities and process items with airflow
 
 **Contraptions**
 - Bearing — rotate structures around a central point
@@ -50,20 +51,28 @@ The following machines and systems are currently present and functional:
 
 ## 📦 Download
 
+**Option 1 — Pre-release (recommended)**
+
+Download the latest pre-release directly from the [Releases page](https://github.com/Apostrcfo2/ReCreate/releases). Look for the latest `v0.0.1` pre-release and download the `.jar` file.
+
+**Option 2 — Latest build**
+
 Go to the **[Actions tab](https://github.com/Apostrcfo2/ReCreate/actions)** → click the latest successful run → scroll to **Artifacts** → download `mod-jar`.
+
+> The Actions build is always more up-to-date but may be less stable than the pre-release.
 
 ---
 
 ## 🔧 Dependencies
 
-All four files must be present in your `mods` folder for the mod to work. (Except Minecraft Forge)
+All files below must be present in your `mods` folder for the mod to work.
 
-| Mod | Version | Download |
+| Mod | Description | Download |
 |---|---|---|
-| Minecraft Forge | 1.7.10-10.13.4.1614 | [Download](https://files.minecraftforge.net/net/minecraftforge/forge/index_1.7.10.html) |
-| UniMixins | 0.3.0+ | [Download](https://github.com/LegacyModdingMC/UniMixins/releases) |
-| Metaworlds Mixins | 1.6.1 | [Download](https://github.com/Gordon-Frohman/Metaworlds-Mixins/releases) |
-| TileEntity Breaker | 1.2.1 | [Download](https://github.com/Gordon-Frohman/TileEntityBreaker/releases) |
+| Minecraft Forge 1.7.10-10.13.4.1614 | Mod loader | [Download](https://files.minecraftforge.net/net/minecraftforge/forge/index_1.7.10.html) |
+| UniMixins | Mixin implementation library | [Download](https://github.com/LegacyModdingMC/UniMixins/releases) |
+| Metaworlds Mixins | A fork of MetaWorlds by TCL Project, replaces ASM with Mixins. Required alongside UniMixins | [Download](https://github.com/Gordon-Frohman/Metaworlds-Mixins/releases) |
+| TileEntity Breaker | Required utility library | [Download](https://github.com/Gordon-Frohman/TileEntityBreaker/releases) |
 
 ---
 
@@ -71,8 +80,8 @@ All four files must be present in your `mods` folder for the mod to work. (Excep
 
 1. Install **Minecraft Forge** `1.7.10-10.13.4.1614`
 2. Download all dependencies from the table above
-3. Download the **ReCreate** jar from the Actions tab
-4. Place all jars into your `.minecraft/mods` folder
+3. Download the **ReCreate** jar from the Releases page or Actions tab
+4. Place **all** jars into your `.minecraft/mods` folder
 5. Launch Minecraft with the Forge profile
 
 ---
