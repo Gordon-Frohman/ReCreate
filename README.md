@@ -53,7 +53,7 @@ The following machines and systems are currently present and functional:
 
 **Option 1 — Pre-release (recommended)**
 
-Download the latest pre-release directly from the [Releases page](https://github.com/Apostrcfo2/ReCreate/releases). Look for the latest `v0.0.1` pre-release and download the `.jar` file.
+Download the latest pre-release directly from the [Releases page](https://github.com/Apostrcfo2/ReCreate/releases). Look for the latest `v0.0.1` pre-release and download the `.zip` file.
 
 **Option 2 — Latest build**
 
@@ -83,6 +83,20 @@ All files below must be present in your `mods` folder for the mod to work.
 3. Download the **ReCreate** jar from the Releases page or Actions tab
 4. Place **all** jars into your `.minecraft/mods` folder
 5. Launch Minecraft with the Forge profile
+
+---
+
+## ⚖️ Legal Matters
+
+This project was originally created by [Gordon-Frohman](https://github.com/Gordon-Frohman/ReCreate). All code, structure, and concepts are his work. This fan build exists solely for easier access and distribution.
+
+ReCreate contains textures and sounds from **[Create 0.4.1](https://github.com/Creators-of-Create/Create/tree/mc1.17/dev)**. All Create assets are distributed under the **All Rights Reserved (ARR)** license. 
+
+<div align="center">
+<img src="Permission.png" alt="Permission granted by Create team" width="500"/>
+
+*Permission granted by the Create team for use of assets in ports and addons.*
+</div>
 
 ---
 
