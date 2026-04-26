@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="logo.png" alt="ReCreate Logo" width="180"/>
+<img src="ReCreate.png" alt="ReCreate Logo" width="180"/>
 
 # ReCreate
 
