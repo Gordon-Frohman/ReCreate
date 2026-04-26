@@ -46,11 +46,6 @@ The following machines and systems are currently present and functional:
 - Bearing — rotate structures around a central point
 - Windmill Bearing — generate power from wind using sails
 
-**Processing**
-- Millstone — grind materials into dust and powder
-- Mechanical Press — press items into plates and compact resources
-- Mechanical Saw — automate tree felling
-
 ---
 
 ## 📦 Download
@@ -61,7 +56,7 @@ Go to the **[Actions tab](https://github.com/Apostrcfo2/ReCreate/actions)** → 
 
 ## 🔧 Dependencies
 
-All four files must be present in your `mods` folder for the mod to work.
+All four files must be present in your `mods` folder for the mod to work. (Except Minecraft Forge)
 
 | Mod | Version | Download |
 |---|---|---|
