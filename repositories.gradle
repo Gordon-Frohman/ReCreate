@@ -3,18 +3,18 @@
 repositories {
     maven {
         name = "GitHubPackages"
-        url = uri("https://maven.pkg.github.com/Gordon-Frohman/Metaworlds-Mixins")
+        url = "https://maven.pkg.github.com/Gordon-Frohman/Metaworlds-Mixins"
         credentials {
-            username = System.getenv("GH_USERNAME") ?: ""
-            password = System.getenv("GH_TOKEN") ?: ""
+            username = project.findProperty("ghUsername") ?: ""
+            password = project.findProperty("ghToken") ?: ""
         }
     }
     maven {
         name = "GitHubPackages"
-        url = uri("https://maven.pkg.github.com/Gordon-Frohman/TileEntityBreaker")
+        url = "https://maven.pkg.github.com/Gordon-Frohman/TileEntityBreaker"
         credentials {
-            username = System.getenv("GH_USERNAME") ?: ""
-            password = System.getenv("GH_TOKEN") ?: ""
+            username = project.findProperty("ghUsername") ?: ""
+            password = project.findProperty("ghToken") ?: ""
         }
     }
 }
