@@ -15,11 +15,7 @@ A backport of the legendary [Create mod](https://github.com/Creators-of-Create/C
 
 ---
 
-> ⚠️ **Fan-maintained build.**
-> All credit goes to [Gordon-Frohman](https://github.com/Gordon-Frohman/ReCreate), the original author of this port.
-> This page exists for aesthetic and distribution purposes only.
-
-> 🚫 **PLEASE do not include this mod in any publicly available modpack** until an official release is made by the original author. This is a request from the developer himself to slow news spreading before the official launch. Once ReCreate is officially released, you are free to include it.
+> 🚫 **PLEASE do not include this mod in any publicly available modpack** until an official release. This is done solely to slow news spreading before the official launch. Once ReCreate is officially released, you are free to include it.
 
 </div>
 
@@ -27,9 +23,9 @@ A backport of the legendary [Create mod](https://github.com/Creators-of-Create/C
 
 ## About
 
-ReCreate is an in-progress backport of the [Create mod](https://github.com/Creators-of-Create/Create) to Minecraft 1.7.10. Create is known for its rotational mechanics — instead of magic machines and GUIs, everything runs on **physical force**, **kinetic energy**, and **mechanical contraptions**.
+ReCreate is a work-in-progress backport of the [Create mod](https://github.com/Creators-of-Create/Create) to Minecraft 1.7.10. Create is known for its rotational mechanics — instead of magic machines and GUIs, everything runs on **physical force**, **kinetic energy**, and **mechanical contraptions**.
 
-This is a **very early build**. The mod is under active development by its original author. Expect crashes, missing features, and incomplete content. It is not recommended for survival play yet.
+This is a **very early build**. The mod is under active development. Expect crashes, missing features, and incomplete content. It is not intended for survival play yet.
 
 ---
 
@@ -39,13 +35,15 @@ The following machines and systems are currently present and functional:
 
 **Kinetic Energy**
 - Cogwheels and Axles — transfer rotational power across structures
-- Gearbox and Clutch — redirect and control rotation
-- Creative Motor — infinite rotation source for testing
-- Water Wheel — generate power from flowing water
+- Gearboxes and Clutches — redirect and control rotation
+- Creative Motors — infinite rotation source for testing
+- Water Wheels — generate power from flowing water
+- Mechanical Belts — transfer rotational power and transport items
 
 **Contraptions**
-- Bearing — rotate structures around a central point
-- Windmill Bearing — generate power from wind using sails
+- Bearings — rotate structures around a central point
+- Windmill Bearings — generate power from wind using sails
+- Mechanical Pistons — move structures orthogonally
 
 ---
 
@@ -60,6 +58,7 @@ Download the latest pre-release directly from the [Releases page](https://github
 Go to the **[Actions tab](https://github.com/Apostrcfo2/ReCreate/actions)** → click the latest successful run → scroll to **Artifacts** → download `mod-jar`.
 
 > The Actions build is always more up-to-date but may be less stable than the pre-release.
+> Pre release builds are published by a different author. Please submit all the issues you have to the [original repo 'issues' page](https://github.com/Gordon-Frohman/ReCreate/issues)
 
 ---
 
@@ -71,8 +70,8 @@ All files below must be present in your `mods` folder for the mod to work.
 |---|---|---|
 | Minecraft Forge 1.7.10-10.13.4.1614 | Mod loader | [Download](https://files.minecraftforge.net/net/minecraftforge/forge/index_1.7.10.html) |
 | UniMixins | Mixin implementation library | [Download](https://github.com/LegacyModdingMC/UniMixins/releases) |
-| Metaworlds Mixins | A fork of MetaWorlds by TCL Project, replaces ASM with Mixins. Required alongside UniMixins | [Download](https://github.com/Gordon-Frohman/Metaworlds-Mixins/releases) |
-| TileEntity Breaker | Required utility library | [Download](https://github.com/Gordon-Frohman/TileEntityBreaker/releases) |
+| Metaworlds Mixins | A library used for contraptions creation. Required alongside UniMixins | [Download](https://github.com/Gordon-Frohman/Metaworlds-Mixins/releases) |
+| TileEntity Breaker | An optional library used for rendering destruction textures on shafts, cogwheels, belts, etc. Usage is highly recommended. | [Download](https://github.com/Gordon-Frohman/TileEntityBreaker/releases) |
 
 ---
 
@@ -88,7 +87,7 @@ All files below must be present in your `mods` folder for the mod to work.
 
 ## ⚖️ Legal Matters
 
-This project was originally created by [Gordon-Frohman](https://github.com/Gordon-Frohman/ReCreate). All code, structure, and concepts are his work. This fan build exists solely for easier access and distribution.
+This project is heavilly based on source code of [Create 0.4.1](https://github.com/Creators-of-Create/Create/tree/mc1.17/dev) with necessary modifications made by [Gordon-Frohman](https://github.com/Gordon-Frohman).
 
 ReCreate contains textures and sounds from **[Create 0.4.1](https://github.com/Creators-of-Create/Create/tree/mc1.17/dev)**. All Create assets are distributed under the **All Rights Reserved (ARR)** license. 
 
@@ -102,14 +101,6 @@ ReCreate contains textures and sounds from **[Create 0.4.1](https://github.com/C
 
 ## Credits
 
-- **[Gordon-Frohman](https://github.com/Gordon-Frohman/ReCreate)** — creator of this 1.7.10 port
 - **[Simibubi & the Create team](https://github.com/Creators-of-Create/Create)** — creators of the original Create mod
+- **[Gordon-Frohman](https://github.com/Gordon-Frohman/ReCreate)** — creator of this 1.7.10 port
 - **[LegacyModdingMC](https://github.com/LegacyModdingMC/UniMixins)** — UniMixins
-
----
-
-<div align="center">
-
-*This repository is an unofficial fan build of [Gordon-Frohman/ReCreate](https://github.com/Gordon-Frohman/ReCreate) and is not affiliated with or endorsed by its author.*
-
-</div>
