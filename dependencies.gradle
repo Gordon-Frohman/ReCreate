@@ -35,6 +35,6 @@
  */
 dependencies {
 	shadowImplementation(files("libs/CTMLib-1.4.5-dev.jar"))
-	implementation("com.github.Gordon-Frohman:tebreaker:1.2.1") {transitive = false}
-	implementation("com.github.Gordon-Frohman:metaworlds-mixins:1.6.1")
+	implementation("com.github.Gordon-Frohman:TileEntityBreaker:1.2.1a") {transitive = false}
+	implementation("com.github.Gordon-Frohman:Metaworlds-Mixins:1.6.1a")
 }
