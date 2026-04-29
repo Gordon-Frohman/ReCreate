@@ -45,7 +45,10 @@ import su.sergiusonesimus.recreate.content.contraptions.relays.elementary.cogwhe
 import su.sergiusonesimus.recreate.content.contraptions.relays.elementary.shaft.ShaftRenderBlock;
 import su.sergiusonesimus.recreate.content.contraptions.relays.elementary.shaft.ShaftTileEntity;
 import su.sergiusonesimus.recreate.content.contraptions.relays.elementary.shaft.ShaftTileEntityRenderer;
-import su.sergiusonesimus.recreate.content.contraptions.relays.encased.*;
+import su.sergiusonesimus.recreate.content.contraptions.relays.encased.ClutchTileEntity;
+import su.sergiusonesimus.recreate.content.contraptions.relays.encased.GearshiftTileEntity;
+import su.sergiusonesimus.recreate.content.contraptions.relays.encased.SplitShaftRenderBlock;
+import su.sergiusonesimus.recreate.content.contraptions.relays.encased.SplitShaftTileEntityRenderer;
 import su.sergiusonesimus.recreate.content.contraptions.relays.gearbox.GearboxRenderBlock;
 import su.sergiusonesimus.recreate.content.contraptions.relays.gearbox.GearboxTileEntity;
 import su.sergiusonesimus.recreate.content.contraptions.relays.gearbox.GearboxTileEntityRenderer;
