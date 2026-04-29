@@ -1,20 +1,6 @@
 // Add any additional repositories for your dependencies here.
 
 repositories {
-    maven {
-        name = "GitHubPackages"
-        url = uri("https://maven.pkg.github.com/Gordon-Frohman/Metaworlds-Mixins")
-        credentials {
-            username = "[Your username here]"
-            password = "[Your access token here]"
-        }
-    }
-    maven {
-        name = "GitHubPackages"
-        url = uri("https://maven.pkg.github.com/Gordon-Frohman/TileEntityBreaker")
-        credentials {
-            username = "[Your username here]"
-            password = "[Your access token here]"
-        }
-    }
+	mavenCentral()
+	maven { url 'https://jitpack.io' }
 }
