@@ -17,7 +17,7 @@ Despite the fact that we are using classes from version 0.4.1, we should add fea
 - Features removed by 0.4.1. No need to backport these
 - Features reworked by 0.4.1. We should backport the latest version of the feature instead
 - Core features like goggles, wrench and Pondering mechanic. These should be added ASAP
-- Features required by others on 0.4.1. For example in 0.4.1 crushing wheels are crafted using the mechanical crafter, which requires us to backport it earlier
+- Features required by others in 0.4.1. For example in 0.4.1 crushing wheels are crafted using the mechanical crafter, which requires us to backport it earlier
 
 1. ReCreate 1.0 - Initial release. Features added:
 	- [x] Shafts
