@@ -15,7 +15,7 @@ Obviously heavilly based on the [Create version history](https://wiki.createmod.
 
 Despite the fact that we are using classes from version 0.4.1, we should add features in the chronological order, with the exceptions being:
 - Features removed by 0.4.1. No need to backport these
-- Features reworked by 0.4.1. We should backport the latest version of the feature intead
+- Features reworked by 0.4.1. We should backport the latest version of the feature instead
 - Core features like goggles, wrench and Pondering mechanic. These should be added ASAP
 - Features required by others on 0.4.1. For example in 0.4.1 crushing wheels are crafted using the mechanical crafter, which requires us to backport it earlier
 
@@ -141,7 +141,7 @@ While working with the original Create code intended to be run on Minecraft 1.17
 
 Even if some method or variable seems useless right now, there might be a use for it in the future, when another feature is implemented. And when it happens, - believe me - you don't want to crawl all over the original repo looking for deleted methods and variables.
 
-**Example:** Some classes may refer to blocks that were not yet backported (such as seats) or do not exist on 1.7.10 (such as slime blocks). Every mentioning of these blocks was commented out by me, because these blocks can either be added in the future, or implemented via an integration with [Et Futurum Requiem](http://https://github.com/GTNewHorizons/Et-Futurum-Requiem).
+**Example:** Some classes may refer to blocks that were not yet backported (such as seats) or do not exist on 1.7.10 (such as slime blocks). Every mentioning of such blocks was commented out by me, because these blocks can either be added in the future, or implemented via an integration with [Et Futurum Requiem](http://https://github.com/GTNewHorizons/Et-Futurum-Requiem).
 ### 3. Different names - same functions
 For seven years in development between Minecraft 1.7.10 and Minecraft 1.17.1 a lot of classes and methods had their names changed. But that doesn't mean that their functionality changed a lot. For example `World` class from 1.7.10 is called `Level` in 1.17.1, `TileEntity` was renamed to `BlockEntity`, and so on.
 
@@ -159,7 +159,7 @@ Firstly - calculate the total amount of its states. If it's 16 or lower - there'
 
 If the amount of states of the block is higher then 16 then one of the parameters should be moved to the block's tile entity. Such is the case for belts in ReCreate: their rotations are stored in metadata, but directions and casing material is stored in the tile entity.
 #### 4.2. Models and textures
-Models in future versions of Minecraft are handled via .json files, while in Minecraft they are hardcoded. Therefore the models are one of the few things that cannot be backported and has to be done from scratch. As an example you can take a look at the [original Create cogwheel model](http://https://github.com/Creators-of-Create/Create/blob/mc1.17/dev/src/main/resources/assets/create/models/block/cogwheel.json) and at [my backported version](http://https://github.com/Gordon-Frohman/ReCreate/blob/main/src/main/java/su/sergiusonesimus/recreate/content/contraptions/relays/elementary/cogwheel/CogWheelModel.java).
+Models in future versions of Minecraft are handled via .json files, while in Minecraft 1.7.10 they are hardcoded. Therefore the models are one of the few things that cannot be backported and has to be done from scratch. As an example you can take a look at the [original Create cogwheel model](http://https://github.com/Creators-of-Create/Create/blob/mc1.17/dev/src/main/resources/assets/create/models/block/cogwheel.json) and at [my backported version](http://https://github.com/Gordon-Frohman/ReCreate/blob/main/src/main/java/su/sergiusonesimus/recreate/content/contraptions/relays/elementary/cogwheel/CogWheelModel.java).
 
 Same thing goes for textures: while new versions allow usage of the same texture on different faces of the model, 1.7.10 requires you to make an "unfolded" texture for all the faces.
 
