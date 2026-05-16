@@ -13,6 +13,8 @@ import su.sergiusonesimus.recreate.content.contraptions.components.structureMove
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.bearing.MechanicalBearingTileEntity;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.piston.MechanicalPistonTileEntity;
 import su.sergiusonesimus.recreate.content.contraptions.components.waterwheel.WaterWheelTileEntity;
+import su.sergiusonesimus.recreate.content.contraptions.relays.belt.BeltPulleyModel;
+import su.sergiusonesimus.recreate.content.contraptions.relays.belt.BeltTileEntity;
 import su.sergiusonesimus.recreate.content.contraptions.relays.elementary.cogwheel.CogWheelModel;
 import su.sergiusonesimus.recreate.content.contraptions.relays.elementary.cogwheel.CogWheelTileEntity;
 import su.sergiusonesimus.recreate.content.contraptions.relays.elementary.cogwheel.LargeCogWheelModel;
@@ -34,6 +36,9 @@ public class TileEntityBreakerIntegration {
     public static final String LARGE_COGWHEEL = "large_cogwheel";
     public static final String BEARING = "bearing";
     public static final String WATER_WHEEL = "water_wheel";
+    public static final String BELT = "belt";
+    public static final String DIAGONAL_BELT = "diagonal_belt";
+    public static final String BELT_PULLEY = "belt_pulley";
 
     public static void registerTileEntities() {
         ShaftModel shaft = new ShaftModel();
@@ -92,6 +97,12 @@ public class TileEntityBreakerIntegration {
         TileEntityBreaker.registerTileEntity(WaterWheelTileEntity.class, SHAFT);
 
         TileEntityBreaker.registerTileEntity(MechanicalPistonTileEntity.class, SHAFT);
+
+        TileEntityBreaker.registerModel(BELT, TEBREAKER);
+        TileEntityBreaker.registerModel(DIAGONAL_BELT, TEBREAKER);
+        BeltPulleyModel pulley = new BeltPulleyModel();
+        TileEntityBreaker.registerModel(BELT_PULLEY, 16, 16, pulley.pulleyParts[0]);
+        TileEntityBreaker.registerTileEntity(BeltTileEntity.class, SHAFT);
     }
 
     public static boolean shouldRenderDamageTexture(TileEntitySpecialRenderer renderer) {

@@ -37,7 +37,7 @@ public class BeltConnectorItem extends ItemBlock {
 
     @Override
     public String getUnlocalizedName(ItemStack stack) {
-        return "item.belt_connector";
+        return getUnlocalizedName();
     }
 
     @Override

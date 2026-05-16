@@ -1,4 +1,4 @@
-package su.sergiusonesimus.recreate.zmixin.mixins;
+package su.sergiusonesimus.recreate.zmixin.mixins.minecraft;
 
 import java.util.Collection;
 import java.util.Iterator;

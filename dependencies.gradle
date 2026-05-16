@@ -35,6 +35,10 @@
  */
 dependencies {
 	shadowImplementation(files("libs/CTMLib-1.4.5-dev.jar"))
-	implementation("com.github.Gordon-Frohman:TileEntityBreaker:1.2.1a") {transitive = false}
-	implementation("com.github.Gordon-Frohman:Metaworlds-Mixins:1.6.1a")
+    compileOnly("com.github.GTNewHorizons:Angelica:2.1.22:dev")
+	implementation("com.github.Gordon-Frohman:TileEntityBreaker:1.2.1b:dev") { transitive = false }
+	implementation("com.github.Gordon-Frohman:Metaworlds-Mixins:1.6.1b:dev") { transitive = false }
+	// For whatever reasons both TEBreaker and Metaworlds now download both dev and release version of Unimixins, making a conflict
+	// Therefore we have to include a proper Unimixins version separately
+	implementation("io.github.legacymoddingmc:unimixins:0.2.1:dev")
 }

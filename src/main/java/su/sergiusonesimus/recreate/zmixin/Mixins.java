@@ -15,12 +15,31 @@ public enum Mixins {
     VANILLA_COMMON(new Builder("").addTargetedMod(TargetedMod.VANILLA)
         .setSide(Side.BOTH)
         .setPhase(Phase.EARLY)
-        .addMixinClasses("MixinPotionEffect", "MixinPotionHelper", "MixinWorld", "MixinWorldServer")),
+        .addMixinClasses(
+            addPrefix("minecraft.", "MixinPotionEffect", "MixinPotionHelper", "MixinWorld", "MixinWorldServer"))),
 
     VANILLA_CLIENT(new Builder("").addTargetedMod(TargetedMod.VANILLA)
         .setSide(Side.CLIENT)
         .setPhase(Phase.EARLY)
-        .addMixinClasses("MixinBlock", "MixinMinecraft", "MixinRenderBlocks", "MixinRenderGlobal", "MixinWorldClient")),
+        .addMixinClasses(
+            addPrefix(
+                "minecraft.",
+                "MixinBlock",
+                "MixinMinecraft",
+                "MixinRenderBlocks",
+                "MixinRenderGlobal",
+                "MixinWorldClient"))),
+
+    NO_ANGELICA(new Builder("").addTargetedMod(TargetedMod.VANILLA)
+        .addExcludedMod(TargetedMod.ANGELICA)
+        .setSide(Side.CLIENT)
+        .setPhase(Phase.EARLY)
+        .addMixinClasses(addPrefix("minecraft.", "MixinRenderGlobalVanilla"))),
+
+    ANGELICA(new Builder("").addTargetedMod(TargetedMod.ANGELICA)
+        .setSide(Side.CLIENT)
+        .setPhase(Phase.EARLY)
+        .addMixinClasses(addPrefix("angelica.", "MixinRenderGlobal"))),
 
     ;
 

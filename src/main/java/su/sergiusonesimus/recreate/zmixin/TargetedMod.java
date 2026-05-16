@@ -2,7 +2,8 @@ package su.sergiusonesimus.recreate.zmixin;
 
 public enum TargetedMod {
 
-    VANILLA("Minecraft", null);
+    VANILLA("Minecraft", null),
+    ANGELICA("Angelica", "com.gtnewhorizons.angelica.loading.AngelicaTweaker", "angelica");
 
     /** The "name" in the @Mod annotation */
     public final String modName;
