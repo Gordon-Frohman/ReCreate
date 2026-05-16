@@ -163,8 +163,9 @@ Models in future versions of Minecraft are handled via .json files, while in Min
 
 Same thing goes for textures: while new versions allow usage of the same texture on different faces of the model, 1.7.10 requires you to make an "unfolded" texture for all the faces.
 
-[![Cogwheel texture from 1.17.1](https://github.com/Creators-of-Create/Create/blob/mc1.17/dev/src/main/resources/assets/create/textures/block/cogwheel.png "Cogwheel texture from 1.17.1")](http://https://github.com/Creators-of-Create/Create/blob/mc1.17/dev/src/main/resources/assets/create/textures/block/cogwheel.png "Cogwheel texture from 1.17.1")
-[![Cogwheel texture from 1.7.10](https://github.com/Gordon-Frohman/ReCreate/blob/main/src/main/resources/assets/recreate/textures/models/cogwheel.png "Cogwheel texture from 1.7.10")](http://https://github.com/Gordon-Frohman/ReCreate/blob/main/src/main/resources/assets/recreate/textures/models/cogwheel.png "Cogwheel texture from 1.7.10")
+| 1.17.1 | 1.7.10 |
+| --- | --- |
+| [![Cogwheel texture from 1.17.1](https://github.com/Creators-of-Create/Create/blob/mc1.17/dev/src/main/resources/assets/create/textures/block/cogwheel.png "Cogwheel texture from 1.17.1")](http://https://github.com/Creators-of-Create/Create/blob/mc1.17/dev/src/main/resources/assets/create/textures/block/cogwheel.png "Cogwheel texture from 1.17.1") | [![Cogwheel texture from 1.7.10](https://github.com/Gordon-Frohman/ReCreate/blob/main/src/main/resources/assets/recreate/textures/models/cogwheel.png "Cogwheel texture from 1.7.10")](http://https://github.com/Gordon-Frohman/ReCreate/blob/main/src/main/resources/assets/recreate/textures/models/cogwheel.png "Cogwheel texture from 1.7.10") |
 ### 5. Keep it vanilla
 Create obviously requires some stuff from future Minecraft versions which isn't present in 1.7.10. We could go the easy route and just make a hard depency on Et Futurum Requiem. However I don't think every player willing to play ReCreate would want to install it. We will make the integration anyway, but it's going to be optional. ReCreate should be playable without installing any other mods (except for core ones of course).
 
