@@ -36,15 +36,17 @@ public class CogWheelTileEntityRenderer extends KineticTileEntityRenderer {
         GL11.glTranslatef((float) x + 0.5F, (float) y + 0.5F, (float) z + 0.5F);
         GL11.glColor4f(color.getRedAsFloat(), color.getGreenAsFloat(), color.getBlueAsFloat(), color.getAlphaAsFloat());
 
-        boolean damageTexture = ReCreate.isTileEntityBreakerLoaded
-            && TileEntityBreakerIntegration.shouldRenderDamageTexture(this);
-
-        // Render the central shaft model ensuring it mirrors the identical structural axis and stable base angle
+        // FIX: Render the shaft FIRST on the clean global translation matrix.
+        // This ensures the shaft remains perfectly centered on all axes (straight or tilted)
+        // before the large cogwheel model performs any internal matrix transformations.
         shaft.setAxis(axis);
         shaft.setRotation(baseAngle);
         shaft.render(this);
 
-        // Render the corresponding gear model body, preserving perfect directional alignment with the shaft
+        boolean damageTexture = ReCreate.isTileEntityBreakerLoaded
+            && TileEntityBreakerIntegration.shouldRenderDamageTexture(this);
+
+        // Render the corresponding gear model body
         if (!block.isLarge) {
             cogwheel.setAxis(axis);
             cogwheel.setRotation(gearAngle);
