@@ -51,7 +51,7 @@ The following machines and systems are currently present and functional:
 
 **Option 1 — Pre-release (recommended)**
 
-Download the latest pre-release directly from the [Releases page](https://github.com/Apostrcfo2/ReCreate/releases). Look for the latest `v0.0.1` pre-release and download the `.zip` file.
+Download the latest pre-release directly from the [Releases page](https://github.com/Apostrcfo2/ReCreate/releases). Look for the latest pre-release and download the `.jar` file.
 
 **Option 2 — Latest build**
 
