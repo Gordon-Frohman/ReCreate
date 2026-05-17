@@ -21,12 +21,11 @@ public class CogWheelTileEntityRenderer extends KineticTileEntityRenderer {
         CogWheelBlock block = (CogWheelBlock) tileEntity.getBlockType();
         Axis axis = block.getAxis(tileEntity.getBlockMetadata());
 
-        // Base kinetic rotation angle fetched from the TileEntity
+        // Fetch the base kinetic rotation angle directly from the TileEntity
         float baseAngle = getAngleForTe(tileEntity, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, axis);
-
-        // Separate variable for the gear teeth rotation to avoid offsetting the central shaft
         float gearAngle = baseAngle;
 
+        // Apply a half-tooth phase offset (11.25 degrees) if the large cogwheel requires structural meshing alignment
         if (block.isLarge && !shouldOffset(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, axis)) {
             gearAngle -= 11.25F;
         }
@@ -40,14 +39,12 @@ public class CogWheelTileEntityRenderer extends KineticTileEntityRenderer {
         boolean damageTexture = ReCreate.isTileEntityBreakerLoaded
             && TileEntityBreakerIntegration.shouldRenderDamageTexture(this);
 
-        // ISOLATED SHAFT RENDERING: Prevents positional/rotation leak from the cogwheel model
-        GL11.glPushMatrix();
+        // Render the central shaft model ensuring it mirrors the identical structural axis and stable base angle
         shaft.setAxis(axis);
         shaft.setRotation(baseAngle);
         shaft.render(this);
-        GL11.glPopMatrix();
 
-        // Apply the correctly offset angle to the respective cogwheel model
+        // Render the corresponding gear model body, preserving perfect directional alignment with the shaft
         if (!block.isLarge) {
             cogwheel.setAxis(axis);
             cogwheel.setRotation(gearAngle);
