@@ -63,20 +63,12 @@ public class CogWheelTileEntityRenderer extends KineticTileEntityRenderer {
         // Render the cogwheel body with its respective breaking texture if needed
         if (!block.isLarge) {
             if (damageTexture) {
-                TileEntityBreakerIntegration.setBreakTexture(
-                    this,
-                    TileEntityBreakerIntegration.COGWHEEL,
-                    TileEntityBreakerIntegration.getTileEntityDestroyProgress(tileEntity)
-                );
+                TileEntityBreakerIntegration.setBreakTexture(this, TileEntityBreakerIntegration.COGWHEEL, TileEntityBreakerIntegration.getTileEntityDestroyProgress(tileEntity));
             }
             cogwheel.render(this);
         } else {
             if (damageTexture) {
-                TileEntityBreakerIntegration.setBreakTexture(
-                    this,
-                    TileEntityBreakerIntegration.LARGE_COGWHEEL,
-                    TileEntityBreakerIntegration.getTileEntityDestroyProgress(tileEntity)
-                );
+                TileEntityBreakerIntegration.setBreakTexture(this, TileEntityBreakerIntegration.LARGE_COGWHEEL, TileEntityBreakerIntegration.getTileEntityDestroyProgress(tileEntity));
             }
             largeCogwheel.render(this);
         }
