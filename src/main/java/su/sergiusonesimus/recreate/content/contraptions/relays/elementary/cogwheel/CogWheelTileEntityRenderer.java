@@ -20,14 +20,27 @@ public class CogWheelTileEntityRenderer extends KineticTileEntityRenderer {
     public void renderSafe(KineticTileEntity tileEntity, double x, double y, double z, float partialTicks) {
         CogWheelBlock block = (CogWheelBlock) tileEntity.getBlockType();
         Axis axis = block.getAxis(tileEntity.getBlockMetadata());
+        
+        // 1. take the base angle 
+        float angle = getAngleForTe(tileEntity, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, axis);
+        
+        // 2. If it's a large gear, we apply the angle adjustment BEFORE configuring the models. 
+        if (block.isLarge) {
+            if (!shouldOffset(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, axis)) {
+                angle -= Math.PI / 16F; // The 11.25 degree adjustment 
+            }
+        }
 
-        // Fetch the base kinetic rotation angle directly from the TileEntity
-        float baseAngle = getAngleForTe(tileEntity, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, axis);
-        float gearAngle = baseAngle;
+        // 3. We now configure the shaft and cogwheel with the SAME final angle. 
+        shaft.setAxis(axis);
+        shaft.setRotation(angle); // The shaft now follows the adjusted angle. 
 
-        // Apply a half-tooth phase offset (11.25 degrees) if the large cogwheel requires structural meshing alignment
-        if (block.isLarge && !shouldOffset(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, axis)) {
-            gearAngle -= 11.25F;
+        if (!block.isLarge) {
+            cogwheel.setAxis(axis);
+            cogwheel.setRotation(angle);
+        } else {
+            largeCogwheel.setAxis(axis);
+            largeCogwheel.setRotation(angle);
         }
 
         Color color = getColor(tileEntity);
@@ -36,35 +49,26 @@ public class CogWheelTileEntityRenderer extends KineticTileEntityRenderer {
         GL11.glTranslatef((float) x + 0.5F, (float) y + 0.5F, (float) z + 0.5F);
         GL11.glColor4f(color.getRedAsFloat(), color.getGreenAsFloat(), color.getBlueAsFloat(), color.getAlphaAsFloat());
 
-        // FIX: Render the shaft FIRST on the clean global translation matrix.
-        // This ensures the shaft remains perfectly centered on all axes (straight or tilted)
-        // before the large cogwheel model performs any internal matrix transformations.
-        shaft.setAxis(axis);
-        shaft.setRotation(baseAngle);
-        shaft.render(this);
-
         boolean damageTexture = ReCreate.isTileEntityBreakerLoaded
             && TileEntityBreakerIntegration.shouldRenderDamageTexture(this);
 
-        // Render the corresponding gear model body
+        // We rendered the shaft (which is now at the correct angle). 
+        shaft.render(this);
+        
         if (!block.isLarge) {
-            cogwheel.setAxis(axis);
-            cogwheel.setRotation(gearAngle);
-
-            if (damageTexture) {
-                TileEntityBreakerIntegration.setBreakTexture(this, TileEntityBreakerIntegration.COGWHEEL, TileEntityBreakerIntegration.getTileEntityDestroyProgress(tileEntity));
-            }
+            if (damageTexture) TileEntityBreakerIntegration.setBreakTexture(
+                this,
+                TileEntityBreakerIntegration.COGWHEEL,
+                TileEntityBreakerIntegration.getTileEntityDestroyProgress(tileEntity));
             cogwheel.render(this);
         } else {
-            largeCogwheel.setAxis(axis);
-            largeCogwheel.setRotation(gearAngle);
-
-            if (damageTexture) {
-                TileEntityBreakerIntegration.setBreakTexture(this, TileEntityBreakerIntegration.LARGE_COGWHEEL, TileEntityBreakerIntegration.getTileEntityDestroyProgress(tileEntity));
-            }
+            if (damageTexture) TileEntityBreakerIntegration.setBreakTexture(
+                this,
+                TileEntityBreakerIntegration.LARGE_COGWHEEL,
+                TileEntityBreakerIntegration.getTileEntityDestroyProgress(tileEntity));
             largeCogwheel.render(this);
         }
 
         GL11.glPopMatrix();
     }
-}
+            }
