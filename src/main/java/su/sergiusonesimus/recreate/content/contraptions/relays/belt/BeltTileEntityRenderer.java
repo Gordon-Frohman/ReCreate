@@ -4,6 +4,8 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.DestroyBlockProgress;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
@@ -18,6 +20,8 @@ import org.lwjgl.opengl.GL11;
 import su.sergiusonesimus.metaworlds.util.Direction;
 import su.sergiusonesimus.metaworlds.util.Direction.Axis;
 import su.sergiusonesimus.metaworlds.util.Direction.AxisDirection;
+import su.sergiusonesimus.recreate.ReCreate;
+import su.sergiusonesimus.recreate.compat.tebreaker.TileEntityBreakerIntegration;
 import su.sergiusonesimus.recreate.content.contraptions.base.KineticTileEntity;
 import su.sergiusonesimus.recreate.content.contraptions.base.KineticTileEntityRenderer;
 import su.sergiusonesimus.recreate.content.contraptions.relays.belt.transport.TransportedItemStack;
@@ -66,12 +70,26 @@ public class BeltTileEntityRenderer extends KineticTileEntityRenderer {
         GL11.glTranslated(x + .5d, y + .5d, z + .5d);
         GL11.glColor4f(color.getRedAsFloat(), color.getGreenAsFloat(), color.getBlueAsFloat(), color.getAlphaAsFloat());
 
+        boolean damageTexture = ReCreate.isTileEntityBreakerLoaded
+            && TileEntityBreakerIntegration.shouldRenderDamageTexture(this);
+
         if (beltTE.hasPulley()) {
             Axis axis = belt.getAxis(meta);
             float rotation = getAngleForTe(beltTE, beltTE.xCoord, beltTE.yCoord, beltTE.zCoord, axis);
             shaft.setAxis(axis);
             shaft.setRotation(rotation);
             shaft.render(this);
+
+            if (damageTexture) {
+                DestroyBlockProgress dbp = TileEntityBreakerIntegration.getTileEntityDestroyProgress(te);
+                if (dbp != null) {
+                    TileEntityBreakerIntegration.setBreakTexture(
+                        this,
+                        TileEntityBreakerIntegration.BELT_PULLEY,
+                        TileEntityBreakerIntegration.getTileEntityDestroyProgress(te));
+                }
+            }
+
             pulley.setAxis(axis);
             pulley.setRotation(rotation);
             pulley.render(this);
@@ -91,41 +109,84 @@ public class BeltTileEntityRenderer extends KineticTileEntityRenderer {
             part = start ? BeltPart.START : (end ? BeltPart.END : BeltPart.MIDDLE);
         }
 
-        for (boolean bottom : Iterate.trueAndFalse) {
-            BeltModel beltPartial = getBeltPartial(diagonal, part, bottom);
+        DestroyBlockProgress damageState = null;
+        if (ReCreate.isTileEntityBreakerLoaded && !TileEntityBreakerIntegration.shouldRenderDamageTexture(this)) {
+            for (ChunkCoordinates pos : BeltBlock
+                .getBeltChain(te.getWorld(), beltTE.controllerX, beltTE.controllerY, beltTE.controllerZ)) {
+                DestroyBlockProgress dbp = TileEntityBreakerIntegration.getTileEntityDestroyProgress(
+                    te.getWorld()
+                        .getTileEntity(pos.posX, pos.posY, pos.posZ));
+                if (dbp != null
+                    && (damageState == null || dbp.getPartialBlockDamage() > damageState.getPartialBlockDamage())) {
+                    damageState = dbp;
+                }
+            }
+        }
 
-            // UV shift
-            float speed = beltTE.getSpeed();
-            float time = renderTick * -axisDirection.getStep();
-            if (diagonal && (downward == alongX) || !sideways && !diagonal && alongX
-                || sideways && axisDirection == AxisDirection.NEGATIVE) speed = -speed;
+        if (!damageTexture) {
+            for (boolean bottom : Iterate.trueAndFalse) {
+                BeltModel beltPartial = getBeltPartial(diagonal, part, bottom);
 
-            float scrollMult = diagonal ? 3f / 8f : 0.5f;
+                // UV shift
+                float speed = beltTE.getSpeed();
+                float time = renderTick * -axisDirection.getStep();
+                if (diagonal && (downward == alongX) || !sideways && !diagonal && alongX
+                    || sideways && axisDirection == AxisDirection.NEGATIVE) speed = -speed;
 
-            float spriteSize = 1F;
+                float scrollMult = diagonal ? 3f / 8f : 0.5f;
 
-            double scroll = speed * time / (31.5 * 16) + (bottom ? 0.5 : 0);
-            scroll = scroll - Math.floor(scroll);
-            scroll = scroll * spriteSize * scrollMult;
+                float spriteSize = 1F;
 
-            GL11.glMatrixMode(GL11.GL_TEXTURE);
-            GL11.glTranslatef(0.0F, (float) scroll, 0.0F);
-            GL11.glMatrixMode(GL11.GL_MODELVIEW);
+                double scroll = speed * time / (31.5 * 16) + (bottom ? 0.5 : 0);
+                scroll = scroll - Math.floor(scroll);
+                scroll = scroll * spriteSize * scrollMult;
 
-            beltPartial.render(beltTE.color, this);
+                GL11.glMatrixMode(GL11.GL_TEXTURE);
+                GL11.glTranslatef(0.0F, (float) scroll, 0.0F);
+                GL11.glMatrixMode(GL11.GL_MODELVIEW);
 
-            GL11.glMatrixMode(GL11.GL_TEXTURE);
-            GL11.glLoadIdentity();
-            GL11.glMatrixMode(GL11.GL_MODELVIEW);
+                beltPartial.render(beltTE.color, this);
 
-            if (diagonal) break;
+                if (damageState != null) {
+                    GL11.glPushAttrib(GL11.GL_ENABLE_BIT | GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+                    GL11.glPushMatrix();
+
+                    GL11.glEnable(GL11.GL_BLEND);
+                    OpenGlHelper.glBlendFunc(GL11.GL_DST_COLOR, GL11.GL_SRC_COLOR, GL11.GL_ONE, GL11.GL_ZERO);
+
+                    GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
+                    GL11.glPolygonOffset(-3.0F, -3.0F);
+
+                    GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.7F);
+
+                    TileEntityBreakerIntegration.setBreakTexture(
+                        this,
+                        diagonal ? TileEntityBreakerIntegration.DIAGONAL_BELT : TileEntityBreakerIntegration.BELT,
+                        damageState);
+                    beltPartial.render(beltTE.color, this);
+
+                    GL11.glDisable(GL11.GL_POLYGON_OFFSET_FILL);
+                    GL11.glPopMatrix();
+                    GL11.glPopAttrib();
+
+                    OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+                }
+
+                GL11.glMatrixMode(GL11.GL_TEXTURE);
+                GL11.glLoadIdentity();
+                GL11.glMatrixMode(GL11.GL_MODELVIEW);
+
+                if (diagonal) break;
+            }
+        } else {
+            TileEntityBreakerIntegration.setBreakTexture(this, null);
         }
 
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         GL11.glPopMatrix();
 
-        renderItems(beltTE, partialTicks, x, y, z);
+        if (!damageTexture) renderItems(beltTE, partialTicks, x, y, z);
     }
 
     public static BeltModel getBeltPartial(boolean diagonal, BeltPart part, boolean bottom) {

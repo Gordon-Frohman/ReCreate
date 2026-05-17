@@ -1,18 +1,24 @@
-package su.sergiusonesimus.recreate.zmixin.mixins;
+package su.sergiusonesimus.recreate.zmixin.mixins.minecraft;
 
-import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.world.WorldEvent;
 
 import org.spongepowered.asm.mixin.Mixin;
 
 import su.sergiusonesimus.metaworlds.api.SubWorld;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.Contraption;
 
-@Mixin(WorldClient.class)
-public class MixinWorldClient extends MixinWorld {
+@Mixin(WorldServer.class)
+public class MixinWorldServer extends MixinWorld {
 
     public World createContraptionWorld(int newSubWorldID, Contraption contraption) {
-        return this.generateContraptionWorld(newSubWorldID, contraption);
+        World newSubWorld = this.generateContraptionWorld(newSubWorldID, contraption);
+
+        MinecraftForge.EVENT_BUS.post(new WorldEvent.Load(newSubWorld));
+
+        return newSubWorld;
     }
 
     @Override
@@ -28,6 +34,8 @@ public class MixinWorldClient extends MixinWorld {
         subworld.setRotationPitch(rotationPitch);
         subworld.setRotationRoll(rotationRoll);
         subworld.setScaling(scaling);
+
+        MinecraftForge.EVENT_BUS.post(new WorldEvent.Load(newSubWorld));
 
         return newSubWorld;
     }

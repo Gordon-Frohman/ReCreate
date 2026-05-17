@@ -7,7 +7,7 @@ import su.sergiusonesimus.recreate.content.contraptions.relays.elementary.Abstra
 
 public class BeltPulleyModel extends AbstractShaftModel {
 
-    private final ModelRenderer[] pulleyParts = new ModelRenderer[4];
+    public final ModelRenderer[] pulleyParts = new ModelRenderer[4];
 
     public BeltPulleyModel() {
         super(AllModelTextures.BELT_PULLEY, 16, 16);
