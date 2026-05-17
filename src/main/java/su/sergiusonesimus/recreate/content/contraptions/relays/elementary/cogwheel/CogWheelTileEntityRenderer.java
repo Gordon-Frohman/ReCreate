@@ -28,24 +28,7 @@ public class CogWheelTileEntityRenderer extends KineticTileEntityRenderer {
         float gearAngle = baseAngle;
 
         if (block.isLarge && !shouldOffset(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, axis)) {
-            /*
-             * NOTE: If model/renderer uses Radians internally, use: (float) (gearAngle - Math.PI / 16F)
-             * If it uses Degrees (Standard OpenGL/GL11), 11.25F is exactly half a tooth offset for a 16-tooth wheel
-             */
             gearAngle -= 11.25F;
-        }
-
-        // Central shaft always uses the base angle to keep alignment with adjacent shafts
-        shaft.setAxis(axis);
-        shaft.setRotation(baseAngle);
-
-        // Apply the correctly offset angle to the respective cogwheel model
-        if (!block.isLarge) {
-            cogwheel.setAxis(axis);
-            cogwheel.setRotation(gearAngle);
-        } else {
-            largeCogwheel.setAxis(axis);
-            largeCogwheel.setRotation(gearAngle);
         }
 
         Color color = getColor(tileEntity);
@@ -57,16 +40,26 @@ public class CogWheelTileEntityRenderer extends KineticTileEntityRenderer {
         boolean damageTexture = ReCreate.isTileEntityBreakerLoaded
             && TileEntityBreakerIntegration.shouldRenderDamageTexture(this);
 
-        // Render the central shaft
+        // ISOLATED SHAFT RENDERING: Prevents positional/rotation leak from the cogwheel model
+        GL11.glPushMatrix();
+        shaft.setAxis(axis);
+        shaft.setRotation(baseAngle);
         shaft.render(this);
+        GL11.glPopMatrix();
 
-        // Render the cogwheel body with its respective breaking texture if needed
+        // Apply the correctly offset angle to the respective cogwheel model
         if (!block.isLarge) {
+            cogwheel.setAxis(axis);
+            cogwheel.setRotation(gearAngle);
+
             if (damageTexture) {
                 TileEntityBreakerIntegration.setBreakTexture(this, TileEntityBreakerIntegration.COGWHEEL, TileEntityBreakerIntegration.getTileEntityDestroyProgress(tileEntity));
             }
             cogwheel.render(this);
         } else {
+            largeCogwheel.setAxis(axis);
+            largeCogwheel.setRotation(gearAngle);
+
             if (damageTexture) {
                 TileEntityBreakerIntegration.setBreakTexture(this, TileEntityBreakerIntegration.LARGE_COGWHEEL, TileEntityBreakerIntegration.getTileEntityDestroyProgress(tileEntity));
             }
