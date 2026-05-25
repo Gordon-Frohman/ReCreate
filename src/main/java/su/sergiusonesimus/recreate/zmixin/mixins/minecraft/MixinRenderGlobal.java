@@ -93,6 +93,7 @@ public class MixinRenderGlobal {
                 if (partAABB1.minX == partAABB.maxX || partAABB1.maxX == partAABB.minX) expandX = false;
                 if (partAABB1.minY == partAABB.maxY || partAABB1.maxY == partAABB.minY) expandY = false;
                 if (partAABB1.minZ == partAABB.maxZ || partAABB1.maxZ == partAABB.minZ) expandZ = false;
+                if (!expandX && !expandY && !expandZ) break;
             }
             for (AxisAlignedBB partAABB1 : bbList) {
                 if (partAABB1 == partAABB) continue;
@@ -142,29 +143,39 @@ public class MixinRenderGlobal {
             for (Segment segment2 : segments2) {
                 Line line = segment1.getLine();
                 if (line.contains(segment2.getStart()) && line.contains(segment2.getEnd())) {
-                    double start1 = line.getAbscissa(segment1.getStart());
-                    double end1 = line.getAbscissa(segment1.getEnd());
+                    Vector3D startVec1 = segment1.getStart();
+                    double start1 = line.getAbscissa(startVec1);
+                    Vector3D endVec1 = segment1.getEnd();
+                    double end1 = line.getAbscissa(endVec1);
                     if (start1 > end1) {
                         double temp = start1;
+                        Vector3D tempVec = startVec1;
                         start1 = end1;
+                        startVec1 = endVec1;
                         end1 = temp;
+                        endVec1 = tempVec;
                     }
-                    double start2 = line.getAbscissa(segment2.getStart());
-                    double end2 = line.getAbscissa(segment2.getEnd());
+                    Vector3D startVec2 = segment2.getStart();
+                    double start2 = line.getAbscissa(startVec2);
+                    Vector3D endVec2 = segment2.getEnd();
+                    double end2 = line.getAbscissa(endVec2);
                     if (start2 > end2) {
                         double temp = start2;
+                        Vector3D tempVec = startVec2;
                         start2 = end2;
+                        startVec2 = endVec2;
                         end2 = temp;
+                        endVec2 = tempVec;
                     }
                     if (start1 < end2 && end1 > start2) {
                         Vector3D segmentStart;
                         Vector3D segmentEnd;
                         if (start1 > start2) {
-                            segmentStart = segment1.getStart();
-                            segmentEnd = end1 < end2 ? segment1.getEnd() : segment2.getEnd();
+                            segmentStart = startVec1;
+                            segmentEnd = end1 < end2 ? endVec1 : endVec2;
                         } else {
-                            segmentStart = segment2.getStart();
-                            segmentEnd = end2 < end1 ? segment2.getEnd() : segment1.getEnd();
+                            segmentStart = startVec2;
+                            segmentEnd = end2 < end1 ? endVec2 : endVec1;
                         }
                         if (!segmentStart.equals(segmentEnd)) {
                             Vec3 sStart = ((IMixinWorld) ((IMixinMovingObjectPosition) rayTraceHit).getWorld())
