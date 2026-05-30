@@ -55,7 +55,7 @@ Download the latest pre-release directly from the [Releases page](https://github
 
 **Option 2 — Latest build**
 
-Go to the **[Actions tab](https://github.com/Apostrcfo2/ReCreate/actions)** → click the latest successful run → scroll to **Artifacts** → download `mod-jar`.
+Go to the **[Actions tab](https://github.com/Gordon-Frohman/ReCreate/actions)** → click the latest successful run → scroll to **Artifacts** → download `mod-jar`.
 
 > The Actions build is always more up-to-date but may be less stable than the pre-release.
 > Pre release builds are published by a different author. Please submit all the issues you have to the [original repo 'issues' page](https://github.com/Gordon-Frohman/ReCreate/issues)
