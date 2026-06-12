@@ -23,7 +23,7 @@ Despite the fact that we are using classes from version 0.4.1, we should add fea
 	- [x] Shafts
 	- [x] Cogwheels
 	- [x] Mechanical Belts
-	- [ ] Casings
+	- [x] Casings
 	- [ ] Encased Shafts
 	- [ ] Encased Belts
 	- [x] Gearboxes
