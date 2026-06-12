@@ -68,6 +68,11 @@ public class MechanicalPistonBlock extends DirectionalAxisKineticBlock implement
         this.setResistance(5.0F);
     }
 
+    @Override
+    public boolean isToolEffective(String type, int metadata) {
+        return type.equals("pickaxe") || type.equals("axe");
+    }
+
     public boolean renderAsNormalBlock() {
         return false;
     }

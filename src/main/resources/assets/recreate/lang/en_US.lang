@@ -60,6 +60,7 @@ tile.copper_tile_slab.name=Copper Tile Slab
 tile.copper_tile_stairs.name=Copper Tile Stairs
 tile.copper_tiles.name=Copper Tiles
 tile.copper_valve_handle.name=Copper Valve Handle
+tile.creative_casing.name=Creative Casing
 tile.creative_crate.name=Creative Crate
 tile.creative_fluid_tank.name=Creative Fluid Tank
 tile.creative_motor.name=Creative Motor

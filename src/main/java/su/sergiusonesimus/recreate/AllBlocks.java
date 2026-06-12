@@ -8,6 +8,8 @@ import net.minecraft.item.ItemDye;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import su.sergiusonesimus.recreate.AllTags.AllBlockTags;
+import su.sergiusonesimus.recreate.content.contraptions.base.CasingBlock;
+import su.sergiusonesimus.recreate.content.contraptions.base.CasingItemBlock;
 import su.sergiusonesimus.recreate.content.contraptions.components.motor.CreativeMotorBlock;
 import su.sergiusonesimus.recreate.content.contraptions.components.motor.CreativeMotorItemBlock;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.bearing.MechanicalBearingBlock;
@@ -64,6 +66,8 @@ public class AllBlocks {
 
     public static Block sail_frame;
     public static Block[] sails = new Block[16];
+
+    public static Block casing;
 
     public static void registerBlocks() {
 
@@ -177,6 +181,10 @@ public class AllBlocks {
             AllBlockTags.WINDMILL_SAILS.add(sails[i]);
             registerMyBlock(sails[i]);
         }
+
+        casing = new CasingBlock(Material.rock).setBlockName("casing")
+            .setCreativeTab(AllItems.BASE_CREATIVE_TAB);
+        registerMyBlock(casing, CasingItemBlock.class);
     }
 
     @SuppressWarnings("unused")

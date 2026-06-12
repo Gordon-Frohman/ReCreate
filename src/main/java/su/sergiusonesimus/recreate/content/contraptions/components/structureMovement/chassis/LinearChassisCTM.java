@@ -1,23 +1,22 @@
-package su.sergiusonesimus.recreate.compat.ctmlib;
+package su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.chassis;
 
 import net.minecraft.block.Block;
 import net.minecraft.world.IBlockAccess;
 
 import su.sergiusonesimus.metaworlds.util.Direction;
-import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.chassis.LinearChassisRenderBlocks;
 import team.chisel.ctmlib.CTM;
 import team.chisel.ctmlib.Dir;
 
-public class ReCreateCTM extends CTM {
+public class LinearChassisCTM extends CTM {
 
     LinearChassisRenderBlocks renderBlocks;
 
-    public ReCreateCTM(LinearChassisRenderBlocks renderBlocks) {
+    public LinearChassisCTM(LinearChassisRenderBlocks renderBlocks) {
         this.renderBlocks = renderBlocks;
     }
 
     public static CTM getInstance(LinearChassisRenderBlocks renderBlocks) {
-        return new ReCreateCTM(renderBlocks);
+        return new LinearChassisCTM(renderBlocks);
     }
 
     public int[] getSubmapIndices(IBlockAccess world, int x, int y, int z, int side) {

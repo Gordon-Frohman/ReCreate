@@ -95,6 +95,11 @@ public class ShaftBlock extends AbstractShaftBlock implements ITE<ShaftTileEntit
         return false;
     }
 
+    @Override
+    public boolean isToolEffective(String type, int metadata) {
+        return type.equals("pickaxe") || type.equals("axe");
+    }
+
     public void setBlockBoundsBasedOnState(IBlockAccess worldIn, int x, int y, int z) {
         if (worldIn == null) return;
         int meta = worldIn.getBlockMetadata(x, y, z);

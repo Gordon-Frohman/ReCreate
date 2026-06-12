@@ -41,6 +41,11 @@ public class GearshiftBlock extends AbstractEncasedShaftBlock implements ITE<Spl
         setTickRandomly(true);
     }
 
+    @Override
+    public boolean isToolEffective(String type, int metadata) {
+        return type.equals("pickaxe") || type.equals("axe");
+    }
+
     protected GearshiftBlock getBlockPowered() {
         return AllBlocks.powered_gearshift;
     }

@@ -132,12 +132,10 @@ public class MixinRenderGlobal {
         return arr;
     });
 
-    private static final ThreadLocal<ArrayList<Segment>> SEGMENTS1_POOL = ThreadLocal
-        .withInitial(() -> new ArrayList<>(12));
-    private static final ThreadLocal<ArrayList<Segment>> SEGMENTS2_POOL = ThreadLocal
-        .withInitial(() -> new ArrayList<>(12));
+    private static final ThreadLocal<Segment[]> SEGMENTS1_POOL = ThreadLocal.withInitial(() -> new Segment[12]);
+    private static final ThreadLocal<Segment[]> SEGMENTS2_POOL = ThreadLocal.withInitial(() -> new Segment[12]);
 
-    private Vector3D updateOrNewVector(Vector3D existing, double x, double y, double z) {
+    private Vector3D updateVector(Vector3D existing, double x, double y, double z) {
         try {
             Field xField = Vector3D.class.getDeclaredField("x");
             xField.setAccessible(true);
@@ -154,62 +152,84 @@ public class MixinRenderGlobal {
         return existing;
     }
 
+    private Segment updateOrCreateSegment(Segment existing, Vector3D start, Vector3D end) {
+        if (existing == null) return new Segment(start, end, new Line(start, end));
+        if (existing.getStart() != start) {
+            try {
+                Field startField = Segment.class.getDeclaredField("start");
+                startField.setAccessible(true);
+                startField.set(existing, start);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        if (existing.getEnd() != end) {
+            try {
+                Field endField = Segment.class.getDeclaredField("end");
+                endField.setAccessible(true);
+                endField.set(existing, end);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        existing.getLine()
+            .reset(start, end);
+        return existing;
+    }
+
     private void findExcludedSegments(AxisAlignedBB aabb1, AxisAlignedBB aabb2, MovingObjectPosition rayTraceHit,
         double d0, double d1, double d2) {
-        ArrayList<Segment> segments1 = SEGMENTS1_POOL.get();
-        ArrayList<Segment> segments2 = SEGMENTS2_POOL.get();
-        segments1.clear();
-        segments2.clear();
+        Segment[] segments1 = SEGMENTS1_POOL.get();
+        Segment[] segments2 = SEGMENTS2_POOL.get();
 
         Vector3D[] vertices1 = VERTICES1_POOL.get();
         Vector3D[] vertices2 = VERTICES2_POOL.get();
 
         for (boolean first : Iterate.trueAndFalse) {
             AxisAlignedBB currentBB = first ? aabb1 : aabb2;
-            ArrayList<Segment> currentSegments = first ? segments1 : segments2;
+            Segment[] currentSegments = first ? segments1 : segments2;
             Vector3D[] currentVertices = first ? vertices1 : vertices2;
 
-            currentVertices[0] = updateOrNewVector(currentVertices[0], currentBB.minX, currentBB.minY, currentBB.minZ);
-            currentVertices[1] = updateOrNewVector(currentVertices[1], currentBB.maxX, currentBB.minY, currentBB.minZ);
-            currentVertices[2] = updateOrNewVector(currentVertices[2], currentBB.maxX, currentBB.minY, currentBB.maxZ);
-            currentVertices[3] = updateOrNewVector(currentVertices[3], currentBB.minX, currentBB.minY, currentBB.maxZ);
-            currentVertices[4] = updateOrNewVector(currentVertices[4], currentBB.minX, currentBB.maxY, currentBB.minZ);
-            currentVertices[5] = updateOrNewVector(currentVertices[5], currentBB.maxX, currentBB.maxY, currentBB.minZ);
-            currentVertices[6] = updateOrNewVector(currentVertices[6], currentBB.maxX, currentBB.maxY, currentBB.maxZ);
-            currentVertices[7] = updateOrNewVector(currentVertices[7], currentBB.minX, currentBB.maxY, currentBB.maxZ);
+            currentVertices[0] = updateVector(currentVertices[0], currentBB.minX, currentBB.minY, currentBB.minZ);
+            currentVertices[1] = updateVector(currentVertices[1], currentBB.maxX, currentBB.minY, currentBB.minZ);
+            currentVertices[2] = updateVector(currentVertices[2], currentBB.maxX, currentBB.minY, currentBB.maxZ);
+            currentVertices[3] = updateVector(currentVertices[3], currentBB.minX, currentBB.minY, currentBB.maxZ);
+            currentVertices[4] = updateVector(currentVertices[4], currentBB.minX, currentBB.maxY, currentBB.minZ);
+            currentVertices[5] = updateVector(currentVertices[5], currentBB.maxX, currentBB.maxY, currentBB.minZ);
+            currentVertices[6] = updateVector(currentVertices[6], currentBB.maxX, currentBB.maxY, currentBB.maxZ);
+            currentVertices[7] = updateVector(currentVertices[7], currentBB.minX, currentBB.maxY, currentBB.maxZ);
 
             for (int i = 0; i < 4; i++) {
                 int nextI = (i + 1) % 4;
-
-                currentSegments.add(
-                    new Segment(
-                        currentVertices[i],
-                        currentVertices[nextI],
-                        new Line(currentVertices[i], currentVertices[nextI])));
-                currentSegments.add(
-                    new Segment(
-                        currentVertices[i + 4],
-                        currentVertices[nextI + 4],
-                        new Line(currentVertices[i + 4], currentVertices[nextI + 4])));
-                currentSegments.add(
-                    new Segment(
-                        currentVertices[i],
-                        currentVertices[i + 4],
-                        new Line(currentVertices[i], currentVertices[i + 4])));
+                int j = i * 3;
+                currentSegments[j] = updateOrCreateSegment(
+                    currentSegments[j],
+                    currentVertices[i],
+                    currentVertices[nextI]);
+                j++;
+                currentSegments[j] = updateOrCreateSegment(
+                    currentSegments[j],
+                    currentVertices[i + 4],
+                    currentVertices[nextI + 4]);
+                j++;
+                currentSegments[j] = updateOrCreateSegment(
+                    currentSegments[j],
+                    currentVertices[i],
+                    currentVertices[i + 4]);
             }
         }
 
         IMixinWorld mixinWorld = (IMixinWorld) ((IMixinMovingObjectPosition) rayTraceHit).getWorld();
 
-        int size1 = segments1.size();
-        int size2 = segments2.size();
+        int size1 = segments1.length;
+        int size2 = segments2.length;
 
         for (int i = 0; i < size1; i++) {
-            Segment segment1 = segments1.get(i);
+            Segment segment1 = segments1[i];
             Line line = segment1.getLine();
 
             for (int j = 0; j < size2; j++) {
-                Segment segment2 = segments2.get(j);
+                Segment segment2 = segments2[j];
 
                 if (line.contains(segment2.getStart()) && line.contains(segment2.getEnd())) {
 

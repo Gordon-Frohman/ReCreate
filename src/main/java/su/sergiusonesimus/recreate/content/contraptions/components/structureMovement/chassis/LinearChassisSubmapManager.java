@@ -15,9 +15,6 @@ import team.chisel.ctmlib.ISubmapManager;
 import team.chisel.ctmlib.RenderBlocksCTM;
 import team.chisel.ctmlib.TextureSubmap;
 
-/**
- * A convenience implementation of {@link ISubmapManager} which does the standard CTM behavior.
- */
 public class LinearChassisSubmapManager implements ISubmapManager {
 
     private static String chassisSide1Name = "linear_chassis_side";

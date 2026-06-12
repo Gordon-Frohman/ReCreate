@@ -45,6 +45,11 @@ public class PistonExtensionPoleBlock extends WrenchableDirectionalBlock impleme
         this.setStepSound(soundTypePiston);
     }
 
+    @Override
+    public boolean isToolEffective(String type, int metadata) {
+        return type.equals("pickaxe") || type.equals("axe");
+    }
+
     public boolean renderAsNormalBlock() {
         return false;
     }

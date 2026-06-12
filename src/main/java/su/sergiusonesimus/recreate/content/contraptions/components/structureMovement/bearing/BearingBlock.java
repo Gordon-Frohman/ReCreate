@@ -27,6 +27,11 @@ public abstract class BearingBlock extends DirectionalKineticBlock {
     }
 
     @Override
+    public boolean isToolEffective(String type, int metadata) {
+        return type.equals("pickaxe") || type.equals("axe");
+    }
+
+    @Override
     public boolean hasShaftTowards(IBlockAccess world, int x, int y, int z, Direction face) {
         return face == getDirection(world.getBlockMetadata(x, y, z)).getOpposite();
     }

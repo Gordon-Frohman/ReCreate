@@ -122,7 +122,7 @@ public class BeltMovementHandler {
         float top = 13 / 16f;
         boolean onSlope = notHorizontal && (part == BeltPart.MIDDLE || part == BeltPart.PULLEY
             || part == (slope == BeltSlope.UPWARD ? BeltPart.END : BeltPart.START) && entityIn.posY - posY < top
-            || part == (slope == BeltSlope.UPWARD ? BeltPart.START : BeltPart.END) && entityIn.posY - posY > top);
+            || part == (slope == BeltSlope.DOWNWARD ? BeltPart.START : BeltPart.END) && entityIn.posY - posY > top);
 
         boolean movingDown = onSlope && slope == (movementFacing == beltFacing ? BeltSlope.DOWNWARD : BeltSlope.UPWARD);
         boolean movingUp = onSlope && slope == (movementFacing == beltFacing ? BeltSlope.UPWARD : BeltSlope.DOWNWARD);

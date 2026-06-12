@@ -11,7 +11,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import su.sergiusonesimus.metaworlds.util.Direction;
-import su.sergiusonesimus.recreate.compat.ctmlib.ReCreateCTM;
 import team.chisel.ctmlib.RenderBlocksCTM;
 
 public class LinearChassisRenderBlocks extends RenderBlocksCTM {
@@ -26,7 +25,7 @@ public class LinearChassisRenderBlocks extends RenderBlocksCTM {
     private final int[][] lightVertices = { { 0, 0 }, { 1, 0 }, { 1, 1 }, { 0, 1 } };
 
     public LinearChassisRenderBlocks() {
-        this.ctm = ReCreateCTM.getInstance(this);
+        this.ctm = LinearChassisCTM.getInstance(this);
     }
 
     @Override

@@ -107,11 +107,15 @@ public class CommonProxy {
         return 0;
     }
 
+    public int getLinearChassisBlockRenderID() {
+        return 0;
+    }
+
     public int getBeltBlockRenderID() {
         return 0;
     }
 
-    public int getLinearChassisBlockRenderID() {
+    public int getCasingBlockRenderID() {
         return 0;
     }
 

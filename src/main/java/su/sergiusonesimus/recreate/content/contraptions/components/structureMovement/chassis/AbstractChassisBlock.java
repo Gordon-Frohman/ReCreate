@@ -31,6 +31,11 @@ public abstract class AbstractChassisBlock extends BlockRotatedPillar implements
     }
 
     @Override
+    public boolean isToolEffective(String type, int metadata) {
+        return type.equals("pickaxe") || type.equals("axe");
+    }
+
+    @Override
     public boolean onBlockActivated(World worldIn, int x, int y, int z, EntityPlayer player, int side, float subX,
         float subY, float subZ) {
         if (player.isPlayerSleeping() || player.isRiding() || player.isSneaking()) return false;

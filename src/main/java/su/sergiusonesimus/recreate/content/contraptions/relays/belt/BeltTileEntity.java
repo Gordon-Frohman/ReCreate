@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemDye;
@@ -21,6 +22,7 @@ import su.sergiusonesimus.metaworlds.util.Direction;
 import su.sergiusonesimus.metaworlds.util.Direction.Axis;
 import su.sergiusonesimus.metaworlds.util.Direction.AxisDirection;
 import su.sergiusonesimus.recreate.AllBlocks;
+import su.sergiusonesimus.recreate.content.contraptions.base.CasingBlock.CasingType;
 import su.sergiusonesimus.recreate.content.contraptions.base.IRotate;
 import su.sergiusonesimus.recreate.content.contraptions.base.KineticTileEntity;
 import su.sergiusonesimus.recreate.content.contraptions.relays.belt.TransportedItemStackHandlerBehaviour.TransportedResult;
@@ -52,12 +54,6 @@ public class BeltTileEntity extends KineticTileEntity {
     protected LazyOptional<IInventory> itemHandler;
 
     public NBTTagCompound trackerUpdateTag;
-
-    public static enum CasingType {
-        NONE,
-        ANDESITE,
-        BRASS;
-    }
 
     public BeltTileEntity() {
         super();
@@ -354,15 +350,12 @@ public class BeltTileEntity extends KineticTileEntity {
 
     public void setCasingType(CasingType type) {
         if (casing == type) return;
-        // TODO
-        // if (casing != CasingType.NONE) worldObj.levelEvent(
-        // 2001,
-        // xCoord,
-        // yCoord,
-        // zCoord,
-        // Block.getId(
-        // casing == CasingType.ANDESITE ? AllBlocks.ANDESITE_CASING.getDefaultState()
-        // : AllBlocks.BRASS_CASING.getDefaultState()));
+        if (casing != CasingType.NONE) worldObj.playAuxSFX(
+            2001,
+            xCoord,
+            yCoord,
+            zCoord,
+            (Block.getIdFromBlock(AllBlocks.casing) & 4095) | (casing == CasingType.BRASS ? 1 : 0) << 12);
         casing = type;
         markDirty();
         sendData();
@@ -456,15 +449,6 @@ public class BeltTileEntity extends KineticTileEntity {
         }
         return pos;
     }
-
-    // TODO
-    // public static final ModelProperty<CasingType> CASING_PROPERTY = new ModelProperty<>();
-    //
-    // @Override
-    // public IModelData getModelData() {
-    // return new ModelDataMap.Builder().withInitial(CASING_PROPERTY, casing)
-    // .build();
-    // }
 
     @Override
     protected boolean canPropagateDiagonally(IRotate block) {

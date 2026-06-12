@@ -13,7 +13,10 @@ import su.sergiusonesimus.recreate.content.contraptions.components.structureMove
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.bearing.MechanicalBearingTileEntity;
 import su.sergiusonesimus.recreate.content.contraptions.components.structureMovement.piston.MechanicalPistonTileEntity;
 import su.sergiusonesimus.recreate.content.contraptions.components.waterwheel.WaterWheelTileEntity;
+import su.sergiusonesimus.recreate.content.contraptions.relays.belt.BeltCasingModel;
+import su.sergiusonesimus.recreate.content.contraptions.relays.belt.BeltPart;
 import su.sergiusonesimus.recreate.content.contraptions.relays.belt.BeltPulleyModel;
+import su.sergiusonesimus.recreate.content.contraptions.relays.belt.BeltSlope;
 import su.sergiusonesimus.recreate.content.contraptions.relays.belt.BeltTileEntity;
 import su.sergiusonesimus.recreate.content.contraptions.relays.elementary.cogwheel.CogWheelModel;
 import su.sergiusonesimus.recreate.content.contraptions.relays.elementary.cogwheel.CogWheelTileEntity;
@@ -39,6 +42,7 @@ public class TileEntityBreakerIntegration {
     public static final String BELT = "belt";
     public static final String DIAGONAL_BELT = "diagonal_belt";
     public static final String BELT_PULLEY = "belt_pulley";
+    public static final String BELT_CASING = "belt_casing";
 
     public static void registerTileEntities() {
         ShaftModel shaft = new ShaftModel();
@@ -102,6 +106,25 @@ public class TileEntityBreakerIntegration {
         TileEntityBreaker.registerModel(DIAGONAL_BELT, TEBREAKER);
         BeltPulleyModel pulley = new BeltPulleyModel();
         TileEntityBreaker.registerModel(BELT_PULLEY, 16, 16, pulley.pulleyParts[0]);
+        BeltCasingModel horizontalMiddleCasing = new BeltCasingModel(BeltSlope.HORIZONTAL, BeltPart.MIDDLE);
+        BeltCasingModel horizontalEndCasing = new BeltCasingModel(BeltSlope.HORIZONTAL, BeltPart.END);
+        BeltCasingModel diagonalMiddleCasing = new BeltCasingModel(BeltSlope.UPWARD, BeltPart.MIDDLE);
+        BeltCasingModel diagonalStartCasing = new BeltCasingModel(BeltSlope.UPWARD, BeltPart.START);
+        BeltCasingModel sidewaysMiddleCasing = new BeltCasingModel(BeltSlope.SIDEWAYS, BeltPart.MIDDLE);
+        BeltCasingModel sidewaysPulleyCasing = new BeltCasingModel(BeltSlope.SIDEWAYS, BeltPart.PULLEY);
+        TileEntityBreaker.registerModel(
+            BELT_CASING,
+            64,
+            64,
+            horizontalMiddleCasing.bottom[0],
+            horizontalMiddleCasing.sides[0],
+            horizontalEndCasing.bottom[0],
+            horizontalEndCasing.sides[1],
+            horizontalEndCasing.pulley,
+            diagonalStartCasing.bottom[1],
+            diagonalMiddleCasing.sides[1],
+            sidewaysMiddleCasing.sides[0],
+            sidewaysPulleyCasing.sides[2]);
         TileEntityBreaker.registerTileEntity(BeltTileEntity.class, SHAFT);
     }
 

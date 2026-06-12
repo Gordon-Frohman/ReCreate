@@ -22,6 +22,7 @@ import su.sergiusonesimus.metaworlds.util.Direction.Axis;
 import su.sergiusonesimus.metaworlds.util.Direction.AxisDirection;
 import su.sergiusonesimus.recreate.ReCreate;
 import su.sergiusonesimus.recreate.compat.tebreaker.TileEntityBreakerIntegration;
+import su.sergiusonesimus.recreate.content.contraptions.base.CasingBlock.CasingType;
 import su.sergiusonesimus.recreate.content.contraptions.base.KineticTileEntity;
 import su.sergiusonesimus.recreate.content.contraptions.base.KineticTileEntityRenderer;
 import su.sergiusonesimus.recreate.content.contraptions.relays.belt.transport.TransportedItemStack;
@@ -38,6 +39,16 @@ public class BeltTileEntityRenderer extends KineticTileEntityRenderer {
     private static BeltModel horizontalEnd = new BeltModel(true, false);
     private static BeltModel diagonalMiddle = new BeltModel(false, true);
     private static BeltModel diagonalEnd = new BeltModel(true, true);
+
+    private static BeltCasingModel horizontalMiddleCasing = new BeltCasingModel(BeltSlope.HORIZONTAL, BeltPart.MIDDLE);
+    private static BeltCasingModel horizontalPulleyCasing = new BeltCasingModel(BeltSlope.HORIZONTAL, BeltPart.PULLEY);
+    private static BeltCasingModel horizontalEndCasing = new BeltCasingModel(BeltSlope.HORIZONTAL, BeltPart.END);
+    private static BeltCasingModel diagonalMiddleCasing = new BeltCasingModel(BeltSlope.UPWARD, BeltPart.MIDDLE);
+    private static BeltCasingModel diagonalPulleyCasing = new BeltCasingModel(BeltSlope.UPWARD, BeltPart.PULLEY);
+    private static BeltCasingModel diagonalStartCasing = new BeltCasingModel(BeltSlope.UPWARD, BeltPart.START);
+    private static BeltCasingModel diagonalEndCasing = new BeltCasingModel(BeltSlope.UPWARD, BeltPart.END);
+    private static BeltCasingModel sidewaysMiddleCasing = new BeltCasingModel(BeltSlope.SIDEWAYS, BeltPart.MIDDLE);
+    private static BeltCasingModel sidewaysPulleyCasing = new BeltCasingModel(BeltSlope.SIDEWAYS, BeltPart.PULLEY);
 
     private static ShaftModel shaft = new ShaftModel();
     private static BeltPulleyModel pulley = new BeltPulleyModel();
@@ -83,10 +94,7 @@ public class BeltTileEntityRenderer extends KineticTileEntityRenderer {
             if (damageTexture) {
                 DestroyBlockProgress dbp = TileEntityBreakerIntegration.getTileEntityDestroyProgress(te);
                 if (dbp != null) {
-                    TileEntityBreakerIntegration.setBreakTexture(
-                        this,
-                        TileEntityBreakerIntegration.BELT_PULLEY,
-                        TileEntityBreakerIntegration.getTileEntityDestroyProgress(te));
+                    TileEntityBreakerIntegration.setBreakTexture(this, TileEntityBreakerIntegration.BELT_PULLEY, dbp);
                 }
             }
 
@@ -106,7 +114,7 @@ public class BeltTileEntityRenderer extends KineticTileEntityRenderer {
             boolean b = start;
             start = end;
             end = b;
-            part = start ? BeltPart.START : (end ? BeltPart.END : BeltPart.MIDDLE);
+            part = start ? BeltPart.START : (end ? BeltPart.END : part);
         }
 
         DestroyBlockProgress damageState = null;
@@ -184,6 +192,34 @@ public class BeltTileEntityRenderer extends KineticTileEntityRenderer {
 
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
+        if (!damageTexture && beltTE.casing != CasingType.NONE) {
+            BeltCasingModel casing = getCasing(beltSlope, part);
+            casing.render(beltTE.casing, this);
+
+            if (damageState != null) {
+                GL11.glPushAttrib(GL11.GL_ENABLE_BIT | GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+                GL11.glPushMatrix();
+
+                GL11.glEnable(GL11.GL_BLEND);
+                OpenGlHelper.glBlendFunc(GL11.GL_DST_COLOR, GL11.GL_SRC_COLOR, GL11.GL_ONE, GL11.GL_ZERO);
+
+                GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
+                GL11.glPolygonOffset(-3.0F, -3.0F);
+
+                GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.7F);
+
+                TileEntityBreakerIntegration
+                    .setBreakTexture(this, TileEntityBreakerIntegration.BELT_CASING, damageState);
+                casing.render(beltTE.casing, this);
+
+                GL11.glDisable(GL11.GL_POLYGON_OFFSET_FILL);
+                GL11.glPopMatrix();
+                GL11.glPopAttrib();
+
+                OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+            }
+        }
+
         GL11.glPopMatrix();
 
         if (!damageTexture) renderItems(beltTE, partialTicks, x, y, z);
@@ -229,6 +265,53 @@ public class BeltTileEntityRenderer extends KineticTileEntityRenderer {
                     result.bottom.showModel = !bottom;
                     break;
             }
+        }
+        return result;
+    }
+
+    public static BeltCasingModel getCasing(BeltSlope slopeType, BeltPart partType) {
+        BeltCasingModel result = null;
+        switch (slopeType) {
+            case HORIZONTAL:
+                switch (partType) {
+                    case MIDDLE:
+                        result = horizontalMiddleCasing;
+                        break;
+                    case PULLEY:
+                        result = horizontalPulleyCasing;
+                        break;
+                    default:
+                        result = horizontalEndCasing;
+                        result.casing.rotateAngleY = partType == BeltPart.START ? (float) Math.PI : 0;
+                        break;
+                }
+                break;
+            case VERTICAL, SIDEWAYS:
+                switch (partType) {
+                    case MIDDLE:
+                        result = sidewaysMiddleCasing;
+                        break;
+                    default:
+                        result = sidewaysPulleyCasing;
+                        break;
+                }
+                break;
+            default:
+                switch (partType) {
+                    case MIDDLE:
+                        result = diagonalMiddleCasing;
+                        break;
+                    case END:
+                        result = diagonalEndCasing;
+                        break;
+                    case PULLEY:
+                        result = diagonalPulleyCasing;
+                        break;
+                    case START:
+                        result = diagonalStartCasing;
+                        break;
+                }
+                break;
         }
         return result;
     }

@@ -30,6 +30,11 @@ public class WaterWheelBlock extends DirectionalKineticBlock implements ITE<Wate
         this.setBlockTextureName("planks_spruce");
     }
 
+    @Override
+    public boolean isToolEffective(String type, int metadata) {
+        return type.equals("pickaxe") || type.equals("axe");
+    }
+
     /**
      * Can this block stay at this position. Similar to canPlaceBlockAt except gets checked often with plants.
      */

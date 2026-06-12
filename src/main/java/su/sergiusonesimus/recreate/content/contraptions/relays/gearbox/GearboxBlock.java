@@ -30,7 +30,11 @@ public class GearboxBlock extends RotatedPillarKineticBlock implements ITE<Gearb
         this.setStepSound(soundTypeWood);
         this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
         this.setBlockTextureName("planks_spruce");
+    }
 
+    @Override
+    public boolean isToolEffective(String type, int metadata) {
+        return type.equals("pickaxe") || type.equals("axe");
     }
 
     @Override

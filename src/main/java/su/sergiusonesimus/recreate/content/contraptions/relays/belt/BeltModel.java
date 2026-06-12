@@ -302,8 +302,6 @@ public class BeltModel extends ModelBase {
     public void renderCore() {
         GL11.glPushMatrix();
 
-        // GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-
         belt.render(0.0625F);
 
         GL11.glPopMatrix();

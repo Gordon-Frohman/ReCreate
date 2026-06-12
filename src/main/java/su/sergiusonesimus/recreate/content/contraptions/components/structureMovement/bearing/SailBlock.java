@@ -69,6 +69,11 @@ public class SailBlock extends WrenchableDirectionalBlock {
         this.color = color;
     }
 
+    @Override
+    public boolean isToolEffective(String type, int metadata) {
+        return type.equals("axe");
+    }
+
     public boolean renderAsNormalBlock() {
         return false;
     }

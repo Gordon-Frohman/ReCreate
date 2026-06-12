@@ -74,6 +74,7 @@ public class ClientProxy extends CommonProxy {
     int pistonExtensionPoleRenderID;
     int linearChassisRenderID;
     int beltRenderID;
+    int casingRenderID;
 
     ModelBiped gogglesArmorModel;
 
@@ -158,6 +159,8 @@ public class ClientProxy extends CommonProxy {
         RenderingRegistry.registerBlockHandler(new CTMRenderer(linearChassisRenderID));
         beltRenderID = RenderingRegistry.getNextAvailableRenderId();
         RenderingRegistry.registerBlockHandler(new BeltRenderBlock(beltRenderID));
+        casingRenderID = RenderingRegistry.getNextAvailableRenderId();
+        RenderingRegistry.registerBlockHandler(new CTMRenderer(casingRenderID));
 
         // armor model
         gogglesArmorModel = new GogglesModel();
@@ -269,6 +272,10 @@ public class ClientProxy extends CommonProxy {
 
     public int getBeltBlockRenderID() {
         return beltRenderID;
+    }
+
+    public int getCasingBlockRenderID() {
+        return casingRenderID;
     }
 
     public ModelBiped getGogglesArmorModel() {

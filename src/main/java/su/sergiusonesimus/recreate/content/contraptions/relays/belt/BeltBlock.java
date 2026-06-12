@@ -40,10 +40,11 @@ import su.sergiusonesimus.metaworlds.util.Rotation;
 import su.sergiusonesimus.recreate.AllBlocks;
 import su.sergiusonesimus.recreate.AllItems;
 import su.sergiusonesimus.recreate.ReCreate;
+import su.sergiusonesimus.recreate.content.contraptions.base.CasingBlock;
+import su.sergiusonesimus.recreate.content.contraptions.base.CasingBlock.CasingType;
 import su.sergiusonesimus.recreate.content.contraptions.base.HorizontalKineticBlock;
 import su.sergiusonesimus.recreate.content.contraptions.processing.EmptyingByBasin;
 import su.sergiusonesimus.recreate.content.contraptions.relays.belt.BeltSlicer.Feedback;
-import su.sergiusonesimus.recreate.content.contraptions.relays.belt.BeltTileEntity.CasingType;
 import su.sergiusonesimus.recreate.content.contraptions.relays.belt.TransportedItemStackHandlerBehaviour.TransportedResult;
 import su.sergiusonesimus.recreate.content.contraptions.relays.belt.item.BeltConnectorItem;
 import su.sergiusonesimus.recreate.content.contraptions.relays.belt.transport.BeltInventory;
@@ -67,11 +68,18 @@ public class BeltBlock extends HorizontalKineticBlock
     public static ResourceLocation beltScrollDiagonalLocation;
     public static ResourceLocation[] coloredScrollLocations = new ResourceLocation[16];
     public static ResourceLocation[] coloredScrollDiagonalLocations = new ResourceLocation[16];
+    public static ResourceLocation andesiteCasingLocation;
+    public static ResourceLocation brassCasingLocation;
 
     public BeltBlock(Material material) {
         super(material);
         this.setStepSound(Block.soundTypeCloth);
         this.setHardness(0.8F);
+    }
+
+    @Override
+    public boolean isToolEffective(String type, int metadata) {
+        return type.equals("pickaxe") || type.equals("axe");
     }
 
     /**
@@ -91,15 +99,17 @@ public class BeltBlock extends HorizontalKineticBlock
             .getAxis();
         double d = 1d / 16d;
         double lengthMin, lengthMax, widthMin, widthMax;
+        // No need to take casing in account in this method
+        // boolean hasCasing = te.casing != CasingType.NONE;
 
         switch (te.slopeType) {
             case HORIZONTAL:
-                minY = 3 * d;
+                minY = /* hasCasing ? 0 : */ 3 * d;
                 maxY = 1d - 3 * d;
                 lengthMin = 0;
                 lengthMax = 1;
-                widthMin = d;
-                widthMax = 1d - d;
+                widthMin = /* hasCasing ? 0 : */ d;
+                widthMax = 1d - (/* hasCasing ? 0 : */ d);
                 if (dirAxis == Axis.X) {
                     minX = lengthMin;
                     maxX = lengthMax;
@@ -117,8 +127,8 @@ public class BeltBlock extends HorizontalKineticBlock
                 maxY = 1;
                 lengthMin = d;
                 lengthMax = 1d - d;
-                widthMin = 3 * d;
-                widthMax = 1d - 3 * d;
+                widthMin = (/* hasCasing ? 2 : */ 3) * d;
+                widthMax = 1d - (/* hasCasing ? 2 : */ 3) * d;
                 if (dirAxis == Axis.X) {
                     minX = widthMin;
                     maxX = widthMax;
@@ -132,12 +142,12 @@ public class BeltBlock extends HorizontalKineticBlock
                 }
                 break;
             case SIDEWAYS:
-                minY = d;
-                maxY = 1d - d;
+                minY = /* hasCasing ? 0 : */ d;
+                maxY = 1d - (/* hasCasing ? 0 : */ d);
                 lengthMin = d;
                 lengthMax = 1d - d;
-                widthMin = 3 * d;
-                widthMax = 1d - 3 * d;
+                widthMin = (/* hasCasing ? 2 : */ 3) * d;
+                widthMax = 1d - (/* hasCasing ? 2 : */ 3) * d;
                 if (dirAxis == Axis.X) {
                     minX = lengthMin;
                     maxX = lengthMax;
@@ -166,8 +176,8 @@ public class BeltBlock extends HorizontalKineticBlock
                 }
                 lengthMin = 0;
                 lengthMax = 1;
-                widthMin = d;
-                widthMax = 1d - d;
+                widthMin = /* hasCasing ? 0 : */ d;
+                widthMax = 1d - (/* hasCasing ? 0 : */ d);
                 if (dirAxis == Axis.X) {
                     minX = lengthMin;
                     maxX = lengthMax;
@@ -192,11 +202,19 @@ public class BeltBlock extends HorizontalKineticBlock
         List<AxisAlignedBB> result = new ArrayList<AxisAlignedBB>();
         BeltTileEntity te = (BeltTileEntity) worldIn.getTileEntity(x, y, z);
         Direction dir = this.getDirection(worldIn.getBlockMetadata(x, y, z));
+        boolean hasCasing = te.casing != CasingType.NONE;
         double d = 1D / 16D;
         switch (te.slopeType) {
             case HORIZONTAL:
                 if (te.partType == BeltPart.MIDDLE || te.partType == BeltPart.PULLEY) {
-                    super.addCollisionBoxesToList(worldIn, x, y, z, mask, result, collider);
+                    result.add(
+                        AxisAlignedBB.getBoundingBox(
+                            x + this.minX,
+                            y + (hasCasing ? 11 * d : this.minY),
+                            z + this.minZ,
+                            x + this.maxX,
+                            y + this.maxY,
+                            z + this.maxZ));
                 } else if ((te.partType == BeltPart.START && dir.getAxisDirection() == AxisDirection.POSITIVE)
                     || (te.partType == BeltPart.END && dir.getAxisDirection() == AxisDirection.NEGATIVE)) {
                         if (dir.getAxis() == Axis.X) {
@@ -225,6 +243,7 @@ public class BeltBlock extends HorizontalKineticBlock
                                     .getBoundingBox(x + d, y + 4 * d, z + 15 * d, x + 15 * d, y + 12 * d, z + 1D));
                         }
                     }
+                if (hasCasing) result.add(AxisAlignedBB.getBoundingBox(x, y, z, x + 1D, y + 11 * d, z + 1D));
                 break;
             case VERTICAL:
                 if (te.partType == BeltPart.MIDDLE || te.partType == BeltPart.PULLEY) {
@@ -242,6 +261,51 @@ public class BeltBlock extends HorizontalKineticBlock
                             AxisAlignedBB.getBoundingBox(x + d, y + d, z + 3 * d, x + 15 * d, y + 15 * d, z + 13 * d));
                         result.add(
                             AxisAlignedBB.getBoundingBox(x + d, y + 15 * d, z + 4 * d, x + 15 * d, y + 1D, z + 12 * d));
+                    }
+                }
+                if (hasCasing) {
+                    boolean xAxis = dir.getAxis() == Axis.X;
+                    result.add(
+                        AxisAlignedBB.getBoundingBox(
+                            x + (xAxis ? 5 * d : 0),
+                            y,
+                            z + (xAxis ? 0 : 5 * d),
+                            x + (xAxis ? 11 * d : 1D),
+                            y + 1D,
+                            z + (xAxis ? 1D : 11 * d)));
+                    if (te.partType != BeltPart.MIDDLE) {
+                        result.add(
+                            AxisAlignedBB.getBoundingBox(
+                                x + (xAxis ? 2 * d : 0),
+                                y + 2 * d,
+                                z + (xAxis ? 0 : 2 * d),
+                                x + (xAxis ? 5 * d : 2 * d),
+                                y + 14 * d,
+                                z + (xAxis ? 2 * d : 5 * d)));
+                        result.add(
+                            AxisAlignedBB.getBoundingBox(
+                                x + (xAxis ? 11 * d : 0),
+                                y + 2 * d,
+                                z + (xAxis ? 0 : 11 * d),
+                                x + (xAxis ? 14 * d : 2 * d),
+                                y + 14 * d,
+                                z + (xAxis ? 2 * d : 14 * d)));
+                        result.add(
+                            AxisAlignedBB.getBoundingBox(
+                                x + (xAxis ? 2 * d : 14 * d),
+                                y + 2 * d,
+                                z + (xAxis ? 14 * d : 2 * d),
+                                x + (xAxis ? 5 * d : 1D),
+                                y + 14 * d,
+                                z + (xAxis ? 1D : 5 * d)));
+                        result.add(
+                            AxisAlignedBB.getBoundingBox(
+                                x + (xAxis ? 11 * d : 14 * d),
+                                y + 2 * d,
+                                z + (xAxis ? 14 * d : 11 * d),
+                                x + (xAxis ? 14 * d : 1D),
+                                y + 14 * d,
+                                z + (xAxis ? 1D : 14 * d)));
                     }
                 }
                 break;
@@ -276,6 +340,51 @@ public class BeltBlock extends HorizontalKineticBlock
                                     .getBoundingBox(x + 3 * d, y + d, z + 15 * d, x + 13 * d, y + 15 * d, z + 1D));
                         }
                     }
+                if (hasCasing) {
+                    boolean xAxis = dir.getAxis() == Axis.X;
+                    result.add(
+                        AxisAlignedBB.getBoundingBox(
+                            x + (xAxis ? 0 : 5 * d),
+                            y,
+                            z + (xAxis ? 5 * d : 0),
+                            x + (xAxis ? 1D : 11 * d),
+                            y + 1D,
+                            z + (xAxis ? 11 * d : 1D)));
+                    if (te.partType != BeltPart.MIDDLE) {
+                        result.add(
+                            AxisAlignedBB.getBoundingBox(
+                                x + 2 * d,
+                                y,
+                                z + 2 * d,
+                                x + (xAxis ? 14 * d : 5 * d),
+                                y + 2 * d,
+                                z + (xAxis ? 5 * d : 14 * d)));
+                        result.add(
+                            AxisAlignedBB.getBoundingBox(
+                                x + (xAxis ? 2 * d : 11 * d),
+                                y,
+                                z + (xAxis ? 11 * d : 2 * d),
+                                x + 14 * d,
+                                y + 2 * d,
+                                z + 14 * d));
+                        result.add(
+                            AxisAlignedBB.getBoundingBox(
+                                x + 2 * d,
+                                y + 14 * d,
+                                z + 2 * d,
+                                x + (xAxis ? 14 * d : 5 * d),
+                                y + 1D,
+                                z + (xAxis ? 5 * d : 14 * d)));
+                        result.add(
+                            AxisAlignedBB.getBoundingBox(
+                                x + (xAxis ? 2 * d : 11 * d),
+                                y + 14 * d,
+                                z + (xAxis ? 11 * d : 2 * d),
+                                x + 14 * d,
+                                y + 1D,
+                                z + 14 * d));
+                    }
+                }
                 break;
             default:
                 double minX, minY, minZ, maxX, maxY, maxZ, dX, dY, dZ;
@@ -380,8 +489,35 @@ public class BeltBlock extends HorizontalKineticBlock
                         }
                     }
                 }
+                if (hasCasing && (te.partType == BeltPart.END || te.partType == BeltPart.START)) {
+                    if (dY > 0) {
+                        result.add(AxisAlignedBB.getBoundingBox(x, y, z, x + 1D, y + 11 * d, z + 1D));
+                    } else {
+                        result.add(
+                            AxisAlignedBB.getBoundingBox(
+                                dX < 0 ? x + 5 * d : x,
+                                y,
+                                dZ < 0 ? z + 5 * d : z,
+                                dX > 0 ? x + 11 * d : x + 1D,
+                                y + 11 * d,
+                                dZ > 0 ? z + 11 * d : z + 1D));
+                    }
+                }
+                double minY2, maxY2;
                 for (int i = 0; i < steps; i++) {
                     result.add(AxisAlignedBB.getBoundingBox(minX, minY, minZ, maxX, maxY, maxZ));
+                    if (hasCasing && (te.partType == BeltPart.MIDDLE || te.partType == BeltPart.PULLEY)) {
+                        minY2 = minY - 2 * d;
+                        maxY2 = maxY - 2 * d;
+                        result.add(
+                            AxisAlignedBB.getBoundingBox(
+                                dX == 0 ? x - 0.1D * d : minX,
+                                (te.partType == BeltPart.PULLEY && minY2 > y) ? y : minY2,
+                                dZ == 0 ? z - 0.1D * d : minZ,
+                                dX == 0 ? x + 1D + 0.1D * d : maxX,
+                                maxY2,
+                                dZ == 0 ? z + 1D + 0.1D * d : maxZ));
+                    }
                     minX += dX;
                     minY += dY;
                     minZ += dZ;
@@ -421,6 +557,9 @@ public class BeltBlock extends HorizontalKineticBlock
             AxisAlignedBB.getBoundingBox(x, y, z, x + 1, y + 1, z + 1),
             collisionList,
             null);
+
+        MovingObjectPosition result = null;
+
         for (AxisAlignedBB aabb : collisionList) {
             Vec3 minXVec = startVec.getIntermediateWithXValue(endVec, aabb.minX);
             Vec3 maxXVec = startVec.getIntermediateWithXValue(endVec, aabb.maxX);
@@ -497,37 +636,38 @@ public class BeltBlock extends HorizontalKineticBlock
                 resultVec = maxZVec;
             }
 
-            if (resultVec != null) {
-                byte b0 = -1;
+            if (resultVec != null && (result == null
+                || startVec.squareDistanceTo(resultVec) < startVec.squareDistanceTo(result.hitVec))) {
+                byte sideHit = -1;
 
                 if (resultVec == minXVec) {
-                    b0 = 4;
+                    sideHit = 4;
                 }
 
                 if (resultVec == maxXVec) {
-                    b0 = 5;
+                    sideHit = 5;
                 }
 
                 if (resultVec == minYVec) {
-                    b0 = 0;
+                    sideHit = 0;
                 }
 
                 if (resultVec == maxYVec) {
-                    b0 = 1;
+                    sideHit = 1;
                 }
 
                 if (resultVec == minZVec) {
-                    b0 = 2;
+                    sideHit = 2;
                 }
 
                 if (resultVec == maxZVec) {
-                    b0 = 3;
+                    sideHit = 3;
                 }
 
-                return new MovingObjectPosition(x, y, z, b0, resultVec);
+                result = new MovingObjectPosition(x, y, z, sideHit, resultVec);
             }
         }
-        return null;
+        return result;
     }
 
     /**
@@ -542,6 +682,16 @@ public class BeltBlock extends HorizontalKineticBlock
      */
     public int getRenderType() {
         return ReCreate.proxy.getBeltBlockRenderID();
+    }
+
+    @SideOnly(Side.CLIENT)
+    public IIcon getIcon(IBlockAccess worldIn, int x, int y, int z, int side) {
+        if (worldIn.getTileEntity(x, y, z) instanceof BeltTileEntity te && te.slopeType == BeltSlope.SIDEWAYS
+            && te.casing != CasingType.NONE
+            && (side == 0 || side == 1)) {
+            return AllBlocks.casing.getIcon(side, te.casing.ordinal() - 1);
+        }
+        return super.getIcon(worldIn, x, y, z, side);
     }
 
     /**
@@ -559,6 +709,8 @@ public class BeltBlock extends HorizontalKineticBlock
         beltScrollLocation = ReCreate.asResource(ASSET_PATH + "belt_scroll.png");
         beltScrollDiagonal = reg.registerIcon(ReCreate.ID + ":belt_diagonal_scroll");
         beltScrollDiagonalLocation = ReCreate.asResource(ASSET_PATH + "belt_diagonal_scroll.png");
+        andesiteCasingLocation = ReCreate.asResource("textures/models/andesite_casing_belt.png");
+        brassCasingLocation = ReCreate.asResource("textures/models/brass_casing_belt.png");
         coloredScrolls = new IIcon[ItemDye.field_150921_b.length];
         coloredScrollsDiagonal = new IIcon[coloredScrolls.length];
         for (int i = 0; i < coloredScrolls.length; i++) {
@@ -585,7 +737,7 @@ public class BeltBlock extends HorizontalKineticBlock
      */
     @SideOnly(Side.CLIENT)
     public String getItemIconName() {
-        return "recreate:textures/items/belt_connector.png";
+        return "recreate:belt_connector";
     }
 
     /**
@@ -624,14 +776,16 @@ public class BeltBlock extends HorizontalKineticBlock
     @Override
     public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune) {
         ArrayList<ItemStack> drops = super.getDrops(world, x, y, z, metadata, fortune);
-        TileEntity tileEntity = world.getTileEntity(x, y, z);
-        if (tileEntity instanceof BeltTileEntity bte && bte.hasPulley())
-            drops.addAll(AllBlocks.shaft.getDrops(world, x, y, z, metadata, fortune));
+        if (storedTE != null) {
+            if (storedTE.hasPulley()) drops.addAll(AllBlocks.shaft.getDrops(world, x, y, z, metadata, fortune));
+            storedTE = null;
+        }
         return drops;
     }
 
     @Override
     public void dropBlockAsItem(World worldIn, int x, int y, int z, ItemStack itemIn) {
+        super.dropBlockAsItem(worldIn, x, y, z, itemIn);
         BeltTileEntity controllerTE = BeltHelper.getControllerTE(worldIn, x, y, z);
         if (controllerTE != null) {
             BeltInventory inventory = controllerTE.getInventory();
@@ -767,20 +921,16 @@ public class BeltBlock extends HorizontalKineticBlock
             return true;
         }
 
-        // TODO
-        // if (AllBlocks.BRASS_CASING.isIn(heldItem)) {
-        // if (world.isRemote) return true;
-        // // TODO AllTriggers.triggerFor(AllTriggers.CASING_BELT, player);
-        // belt.casing = CasingType.BRASS;
-        // return true;
-        // }
-        //
-        // if (AllBlocks.ANDESITE_CASING.isIn(heldItem)) {
-        // if (world.isRemote) return true;
-        // // TODO AllTriggers.triggerFor(AllTriggers.CASING_BELT, player);
-        // belt.casing = CasingType.ANDESITE;
-        // return true;
-        // }
+        if (heldItem != null && heldItem.getItem() instanceof ItemBlock itemBlock
+            && Block.getBlockFromItem(itemBlock) == AllBlocks.casing) {
+            CasingType type = CasingBlock.getTypeFromMeta(heldItem.getItemDamage());
+            if (type == CasingType.ANDESITE || type == CasingType.BRASS) {
+                if (world.isRemote) return true;
+                // TODO AllTriggers.triggerFor(AllTriggers.CASING_BELT, player);
+                belt.setCasingType(type);
+                return true;
+            }
+        }
 
         return false;
     }
@@ -791,17 +941,20 @@ public class BeltBlock extends HorizontalKineticBlock
 
         if (te.casing != CasingType.NONE) {
             if (world.isRemote) return true;
-            te.casing = CasingType.NONE;
+            te.setCasingType(CasingType.NONE);
             return true;
         }
 
         if (te.partType == BeltPart.PULLEY) {
-            if (world.isRemote) return true;
             te.partType = BeltPart.MIDDLE;
             if (player != null && !player.capabilities.isCreativeMode)
                 player.inventory.addItemStackToInventory(new ItemStack(AllBlocks.shaft));
+            if (world.isRemote) return true;
             te.detachKinetics();
-            if (!(world.getTileEntity(te.sourceX, te.sourceY, te.sourceX) instanceof BeltTileEntity)) te.removeSource();
+            if (te.sourceX != null && te.sourceY != null
+                && te.sourceZ != null
+                && !(world.getTileEntity(te.sourceX, te.sourceY, te.sourceX) instanceof BeltTileEntity))
+                te.removeSource();
             te.notifyUpdate();
             te.attachKinetics();
             return true;
@@ -871,14 +1024,19 @@ public class BeltBlock extends HorizontalKineticBlock
 
     }
 
+    private BeltTileEntity storedTE = null;
+
     @Override
     public void breakBlock(World world, int x, int y, int z, Block block, int meta) {
         if (world.isRemote) return;
 
         TileEntity te = world.getTileEntity(x, y, z);
         if (!(te instanceof BeltTileEntity beltTileEntity)) return;
+        if (storedTE == null) storedTE = beltTileEntity;
         if (beltTileEntity.isController()) beltTileEntity.getInventory()
             .ejectAll();
+        beltTileEntity.blockType = block;
+        beltTileEntity.blockMetadata = meta;
         world.removeTileEntity(x, y, z);
 
         // Destroy chain
@@ -903,7 +1061,7 @@ public class BeltBlock extends HorizontalKineticBlock
                 if (belt.isController()) belt.getInventory()
                     .ejectAll();
 
-                belt.invalidate();
+                // belt.invalidate();
                 hasPulley = belt.hasPulley();
             }
 
@@ -1006,21 +1164,5 @@ public class BeltBlock extends HorizontalKineticBlock
     public void setPartType(World world, int x, int y, int z, BeltPart partType) {
         if (world.getTileEntity(x, y, z) instanceof BeltTileEntity bte) bte.partType = partType;
     }
-
-    // TODO
-    // public static class RenderProperties extends ReducedDestroyEffects implements DestroyProgressRenderingHandler {
-    //
-    // @Override
-    // public boolean renderDestroyProgress(WorldClient level, LevelRenderer renderer, int breakerId,
-    // ChunkCoordinates pos, int progress, BlockState blockState) {
-    // TileEntity blockEntity = level.getTileEntity(pos);
-    // if (blockEntity instanceof BeltTileEntity belt) {
-    // for (ChunkCoordinates beltPos : BeltBlock.getBeltChain(level, belt.getController())) {
-    // renderer.destroyBlockProgress(beltPos.hashCode(), beltPos, progress);
-    // }
-    // }
-    // return false;
-    // }
-    // }
 
 }
