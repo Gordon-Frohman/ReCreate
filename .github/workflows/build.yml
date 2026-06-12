@@ -18,6 +18,8 @@ jobs:
           distribution: 'temurin'
       - name: Grant execute permission
         run: chmod +x gradlew
+      - name: Apply Spotless Formating
+        run: ./gradlew spotlessApply
       - name: Build
         run: ./gradlew build
       - name: Upload artifact

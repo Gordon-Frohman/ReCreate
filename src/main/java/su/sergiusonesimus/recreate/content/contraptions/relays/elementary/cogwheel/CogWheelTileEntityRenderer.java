@@ -20,17 +20,29 @@ public class CogWheelTileEntityRenderer extends KineticTileEntityRenderer {
     public void renderSafe(KineticTileEntity tileEntity, double x, double y, double z, float partialTicks) {
         CogWheelBlock block = (CogWheelBlock) tileEntity.getBlockType();
         Axis axis = block.getAxis(tileEntity.getBlockMetadata());
+        
+        // 1. take the base angle 
         float angle = getAngleForTe(tileEntity, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, axis);
+        
+        // 2. If it's a large gear, we apply the angle adjustment BEFORE configuring the models. 
+        if (block.isLarge) {
+            if (!shouldOffset(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, axis)) {
+                angle -= Math.PI / 16F; // The 11.25 degree adjustment 
+            }
+        }
+
+        // 3. We now configure the shaft and cogwheel with the SAME final angle. 
         shaft.setAxis(axis);
-        shaft.setRotation(angle);
+        shaft.setRotation(angle); // The shaft now follows the adjusted angle. 
+
         if (!block.isLarge) {
             cogwheel.setAxis(axis);
             cogwheel.setRotation(angle);
         } else {
             largeCogwheel.setAxis(axis);
-            if (!shouldOffset(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, axis)) angle -= Math.PI / 16F;
             largeCogwheel.setRotation(angle);
         }
+
         Color color = getColor(tileEntity);
 
         GL11.glPushMatrix();
@@ -40,7 +52,9 @@ public class CogWheelTileEntityRenderer extends KineticTileEntityRenderer {
         boolean damageTexture = ReCreate.isTileEntityBreakerLoaded
             && TileEntityBreakerIntegration.shouldRenderDamageTexture(this);
 
+        // We rendered the shaft (which is now at the correct angle). 
         shaft.render(this);
+        
         if (!block.isLarge) {
             if (damageTexture) TileEntityBreakerIntegration.setBreakTexture(
                 this,
@@ -57,5 +71,4 @@ public class CogWheelTileEntityRenderer extends KineticTileEntityRenderer {
 
         GL11.glPopMatrix();
     }
-
-}
+            }
