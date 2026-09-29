@@ -13,8 +13,8 @@
 		"logoFile": "",
 		"screenshots": [],
 		"parent": "",
-		"requiredMods": ["metaworlds@[1.5.0,)"],
-		"dependencies": ["metaworlds"],
+		"requiredMods": ["metaworlds@[1.5.0,)", "modularui2@[2.3.79,)"],
+		"dependencies": ["metaworlds", "modularui2"],
 		"dependants": [],
 		"useDependencyInformation": true
 	}]

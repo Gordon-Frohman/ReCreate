@@ -14,6 +14,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
 import su.sergiusonesimus.recreate.api.event.TileEntityBehaviourEvent;
+import su.sergiusonesimus.recreate.content.schematics.ItemRequirement;
 import su.sergiusonesimus.recreate.foundation.tileentity.behaviour.BehaviourType;
 import su.sergiusonesimus.recreate.util.IInteractionChecker;
 import su.sergiusonesimus.recreate.util.IPartialSafeNBT;
@@ -130,10 +131,10 @@ public abstract class SmartTileEntity extends SyncedTileEntity implements IParti
         behaviourList.forEach(tb -> { if (tb.isSafeNBT()) tb.write(compound, clientPacket); });
     }
 
-    // public ItemRequirement getRequiredItems() {
-    // return behaviourList.stream()
-    // .reduce(ItemRequirement.NONE, (a, b) -> a.with(b.getRequiredItems()), (a, b) -> a.with(b));
-    // }
+    public ItemRequirement getRequiredItems() {
+        return behaviourList.stream()
+            .reduce(ItemRequirement.NONE, (a, b) -> a.with(b.getRequiredItems()), (a, b) -> a.with(b));
+    }
 
     /*
      * TODO: Remove this hack once this issue is resolved: https://github.com/MinecraftForge/MinecraftForge/issues/8302

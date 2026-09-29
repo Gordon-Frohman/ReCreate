@@ -1370,7 +1370,7 @@ public abstract class Contraption {
     protected void onContraptionStalled() {
         if (this.getWorld().isRemote) return;
         ContraptionWorld contraption = this.getContraptionWorld();
-        AllPackets.CHANNEL.sendToAll(
+        AllPackets.channel.sendToAll(
             new ContraptionStallPacket(
                 contraption.getSubWorldID(),
                 contraption.getTranslationX(),

@@ -1,11 +1,18 @@
 package su.sergiusonesimus.recreate.foundation.gui.element;
 
+import com.cleanroommc.modularui.drawable.UITexture;
+
 public abstract class RenderElement implements ScreenElement {
 
     public static final RenderElement EMPTY = new RenderElement() {
 
         @Override
         public void render() {}
+
+        @Override
+        public UITexture asUITexture() {
+            return null;
+        }
     };
 
     public static RenderElement of(ScreenElement renderable) {
@@ -16,6 +23,7 @@ public abstract class RenderElement implements ScreenElement {
     protected float x = 0, y = 0, z = 0;
     protected float alpha = 1f;
 
+    @SuppressWarnings("unchecked")
     public <T extends RenderElement> T at(float x, float y) {
         this.x = x;
         this.y = y;
@@ -23,6 +31,7 @@ public abstract class RenderElement implements ScreenElement {
         return (T) this;
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends RenderElement> T at(float x, float y, float z) {
         this.x = x;
         this.y = y;
@@ -31,6 +40,7 @@ public abstract class RenderElement implements ScreenElement {
         return (T) this;
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends RenderElement> T withBounds(int width, int height) {
         this.width = width;
         this.height = height;
@@ -38,6 +48,7 @@ public abstract class RenderElement implements ScreenElement {
         return (T) this;
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends RenderElement> T withAlpha(float alpha) {
         this.alpha = alpha;
         // noinspection unchecked
@@ -83,6 +94,12 @@ public abstract class RenderElement implements ScreenElement {
         @Override
         public void render() {
             renderable.render((int) x, (int) y);
+        }
+
+        @Override
+        public UITexture asUITexture() {
+            // TODO Auto-generated method stub
+            return null;
         }
     }
 }

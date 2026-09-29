@@ -7,6 +7,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import su.sergiusonesimus.recreate.content.schematics.ItemRequirement;
 import su.sergiusonesimus.recreate.foundation.tileentity.behaviour.BehaviourType;
 
 public abstract class TileEntityBehaviour {
@@ -46,9 +47,9 @@ public abstract class TileEntityBehaviour {
         return false;
     }
 
-    // public ItemRequirement getRequiredItems() {
-    // return ItemRequirement.NONE;
-    // }
+    public ItemRequirement getRequiredItems() {
+        return ItemRequirement.NONE;
+    }
 
     public void onBlockChanged(int meta) {
 

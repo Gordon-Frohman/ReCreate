@@ -1,5 +1,7 @@
 package su.sergiusonesimus.recreate.foundation.gui.element;
 
+import com.cleanroommc.modularui.drawable.UITexture;
+
 import su.sergiusonesimus.recreate.foundation.gui.UIRenderHelper;
 import su.sergiusonesimus.recreate.foundation.utility.Color;
 
@@ -54,6 +56,12 @@ public class DelegatedStencilElement extends StencilElement {
     public interface ElementRenderer {
 
         void render(int width, int height, float alpha);
+    }
+
+    @Override
+    public UITexture asUITexture() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

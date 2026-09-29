@@ -14,6 +14,10 @@ public enum AllModelTextures {
     CREATIVE_MOTOR("creative_motor.png"),
     WATER_WHEEL("water_wheel.png"),
 
+    // Logistics
+    FILTER("filter.png"),
+    ATTRIBUTE_FILTER("property_filter.png"),
+
     // Contraptions
     WINDMILL_BEARING("windmill_bearing.png"),
     MECHANICAL_BEARING("mechanical_bearing.png"),

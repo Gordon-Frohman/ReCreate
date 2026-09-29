@@ -53,6 +53,7 @@ import su.sergiusonesimus.recreate.content.contraptions.relays.gearbox.GearboxRe
 import su.sergiusonesimus.recreate.content.contraptions.relays.gearbox.GearboxTileEntity;
 import su.sergiusonesimus.recreate.content.contraptions.relays.gearbox.GearboxTileEntityRenderer;
 import su.sergiusonesimus.recreate.content.contraptions.wrench.WrenchRenderItem;
+import su.sergiusonesimus.recreate.content.logistics.item.filter.FilterRenderItem;
 import su.sergiusonesimus.recreate.events.ClientEvents;
 import su.sergiusonesimus.recreate.events.InputEvents;
 import su.sergiusonesimus.recreate.foundation.utility.ghost.GhostBlocks;
@@ -110,6 +111,9 @@ public class ClientProxy extends CommonProxy {
 
         // items
         MinecraftForgeClient.registerItemRenderer(AllItems.wrench, new WrenchRenderItem());
+        FilterRenderItem fri = new FilterRenderItem();
+        MinecraftForgeClient.registerItemRenderer(AllItems.filter, fri);
+        MinecraftForgeClient.registerItemRenderer(AllItems.attribute_filter, fri);
 
         // entities
         RenderingRegistry.registerEntityRenderingHandler(SuperGlueEntity.class, new SuperGlueRenderer());

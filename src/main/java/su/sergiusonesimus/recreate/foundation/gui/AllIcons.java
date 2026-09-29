@@ -5,6 +5,8 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ResourceLocation;
 
+import com.cleanroommc.modularui.drawable.UITexture;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import su.sergiusonesimus.recreate.ReCreate;
@@ -125,6 +127,15 @@ public class AllIcons implements ScreenElement {
     public DelegatedStencilElement asStencil() {
         return new DelegatedStencilElement().withStencilRenderer((w, h, alpha) -> this.render(0, 0))
             .withBounds(16, 16);
+    }
+
+    public UITexture asUITexture() {
+        float u1 = (float) iconX / (float) ICON_ATLAS_SIZE;
+        float u2 = (float) (iconX + 16) / (float) ICON_ATLAS_SIZE;
+        float v1 = (float) iconY / (float) ICON_ATLAS_SIZE;
+        float v2 = (float) (iconY + 16) / (float) ICON_ATLAS_SIZE;
+
+        return new UITexture(ICON_ATLAS, u1, v1, u2, v2, null);
     }
 
 }

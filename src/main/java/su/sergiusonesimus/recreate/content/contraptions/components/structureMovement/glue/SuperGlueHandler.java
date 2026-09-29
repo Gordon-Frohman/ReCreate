@@ -40,7 +40,7 @@ public class SuperGlueHandler {
 
         Map<Direction, SuperGlueEntity> gatheredGlue = gatherGlue(world, x, y, z);
         for (Direction direction : gatheredGlue.keySet())
-            AllPackets.CHANNEL.sendToAll(new GlueEffectPacket(x, y, z, direction, true));
+            AllPackets.channel.sendToAll(new GlueEffectPacket(x, y, z, direction, true));
 
         // TODO
         // if (entity instanceof EntityPlayer) glueInOffHandAppliesOnBlockPlace(event, x, y, z, (EntityPlayer) entity);

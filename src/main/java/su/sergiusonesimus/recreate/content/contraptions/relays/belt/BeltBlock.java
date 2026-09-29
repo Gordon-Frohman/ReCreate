@@ -1165,4 +1165,18 @@ public class BeltBlock extends HorizontalKineticBlock
         if (world.getTileEntity(x, y, z) instanceof BeltTileEntity bte) bte.partType = partType;
     }
 
+    public boolean hasCasing(World world, int x, int y, int z) {
+        CasingType casing = this.getCasing(world, x, y, z);
+        return casing == CasingType.ANDESITE || casing == CasingType.BRASS;
+    }
+
+    public CasingType getCasing(World world, int x, int y, int z) {
+        if (!(world.getTileEntity(x, y, z) instanceof BeltTileEntity bte)) return null;
+        return bte.casing;
+    }
+
+    public void setCasing(World world, int x, int y, int z, CasingType casingType) {
+        if (world.getTileEntity(x, y, z) instanceof BeltTileEntity bte) bte.casing = casingType;
+    }
+
 }

@@ -51,6 +51,8 @@ Despite the fact that we are using classes from version 0.4.1, we should add fea
 	- [ ] Pulse Extenders
 	- [ ] Threshold Switch
 	- [ ] Item Vault
+	- [x] Filters for matching a group of items or nested filters
+	- [x] Attribute Filters for matching item properties
 	- [ ] Funnels
 	- [ ] Belt Tunnels
 	- [ ] Smart Observer
@@ -79,8 +81,6 @@ Despite the fact that we are using classes from version 0.4.1, we should add fea
 	- [ ] Rope Pulley
 	- [ ] Cart Assembler
 	- [ ] Portable Storage Interface
-	- [ ] Filters for matching a group of items or nested filters
-	- [ ] Attribute Filters for matching item properties
 	- [ ] Analog Lever
 	- [ ] Powered Latch
 	- [ ] Powered Toggle Latch

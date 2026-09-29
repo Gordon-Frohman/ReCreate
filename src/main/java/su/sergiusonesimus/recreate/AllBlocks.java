@@ -8,6 +8,7 @@ import net.minecraft.item.ItemDye;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import su.sergiusonesimus.recreate.AllTags.AllBlockTags;
+import su.sergiusonesimus.recreate.content.AllSections;
 import su.sergiusonesimus.recreate.content.contraptions.base.CasingBlock;
 import su.sergiusonesimus.recreate.content.contraptions.base.CasingItemBlock;
 import su.sergiusonesimus.recreate.content.contraptions.components.motor.CreativeMotorBlock;
@@ -72,6 +73,7 @@ public class AllBlocks {
     public static void registerBlocks() {
 
         // Kinetics
+        ReCreate.REGISTRATE.startSection(AllSections.KINETICS);
 
         shaft = new ShaftBlock(Material.rock).setBlockName("shaft")
             .setCreativeTab(AllItems.BASE_CREATIVE_TAB);
@@ -185,27 +187,36 @@ public class AllBlocks {
         casing = new CasingBlock(Material.rock).setBlockName("casing")
             .setCreativeTab(AllItems.BASE_CREATIVE_TAB);
         registerMyBlock(casing, CasingItemBlock.class);
+
+        ReCreate.REGISTRATE.startSection(AllSections.LOGISTICS);
     }
 
     @SuppressWarnings("unused")
     private static void registerMyBlock(Block block, Class<? extends ItemBlock> pickup, BlockSlab singleSlab,
         BlockSlab doubleSlab, boolean isDouble) {
         GameRegistry.registerBlock(block, pickup, block.getUnlocalizedName(), singleSlab, doubleSlab, isDouble);
-
+        addBlockToSection(block);
     }
 
     @SuppressWarnings("unused")
     private static void registerMyBlock(Block block, Class<? extends ItemBlock> pickup, Block blockAgain,
         String[] names) {
         GameRegistry.registerBlock(block, pickup, block.getUnlocalizedName(), blockAgain, names);
+        addBlockToSection(block);
     }
 
     private static void registerMyBlock(Block block, Class<? extends ItemBlock> pickup) {
         GameRegistry.registerBlock(block, pickup, block.getUnlocalizedName());
+        addBlockToSection(block);
     }
 
     private static void registerMyBlock(Block block) {
         GameRegistry.registerBlock(block, ItemBlock.class, block.getUnlocalizedName());
+        addBlockToSection(block);
+    }
+
+    private static void addBlockToSection(Block block) {
+        ReCreate.REGISTRATE.addToSection(block, ReCreate.REGISTRATE.currentSection());
     }
 
 }

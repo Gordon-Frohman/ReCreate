@@ -36,7 +36,12 @@
 dependencies {
 	shadowImplementation(files("libs/CTMLib-1.4.5-dev.jar"))
     compileOnly("org.projectlombok:lombok:1.18.24")
-    compileOnly("com.github.GTNewHorizons:Angelica:2.1.22:dev")
+    implementation("com.github.GTNewHorizons:Angelica:2.1.22:dev")
+	implementation("com.github.GTNewHorizons:ModularUI2:2.3.79-1.7.10:dev") { transitive = false }
+    compileOnlyApi("com.github.GTNewHorizons:ModularUI:1.3.4:dev") { transitive = false }				// 4 MUI2 runtime
+    implementation("com.github.GTNewHorizons:Baubles-Expanded:2.2.21-GTNH:dev") { transitive = false }	// 4 MUI2 runtime
+	implementation("com.github.GTNewHorizons:NotEnoughItems:2.8.105-GTNH:dev") { transitive = false }	// 4 MUI2 runtime
+    implementation("com.github.GTNewHorizons:CodeChickenCore:1.4.15:dev")								// 4 MUI2 runtime
 	implementation("com.github.Gordon-Frohman:TileEntityBreaker:1.2.1b:dev") { transitive = false }
 	implementation("com.github.Gordon-Frohman:Metaworlds-Mixins:1.6.1b:dev") { transitive = false }
 	// For whatever reasons both TEBreaker and Metaworlds now download both dev and release version of Unimixins, making a conflict

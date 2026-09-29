@@ -27,6 +27,7 @@ import su.sergiusonesimus.recreate.content.contraptions.base.KineticTileEntity;
 import su.sergiusonesimus.recreate.content.contraptions.base.KineticTileEntityRenderer;
 import su.sergiusonesimus.recreate.content.contraptions.relays.belt.transport.TransportedItemStack;
 import su.sergiusonesimus.recreate.content.contraptions.relays.elementary.shaft.ShaftModel;
+import su.sergiusonesimus.recreate.content.logistics.item.filter.FilterItem;
 import su.sergiusonesimus.recreate.foundation.render.ShadowRenderHelper;
 import su.sergiusonesimus.recreate.foundation.utility.AngleHelper;
 import su.sergiusonesimus.recreate.foundation.utility.Color;
@@ -419,8 +420,12 @@ public class BeltTileEntityRenderer extends KineticTileEntityRenderer {
             if (!renderUpright) {
                 GL11.glRotatef(transported.angle, 0, 1, 0);
                 if (!isBlock) {
-                    GL11.glRotatef(90f, 1, 0, 0);
-                    GL11.glTranslated(0, -7D / 32D, 0);
+                    if (!(stack.getItem() instanceof FilterItem)) {
+                        GL11.glRotatef(90f, 1, 0, 0);
+                        GL11.glTranslated(0, -7D / 32D, 0);
+                    } else {
+                        GL11.glTranslated(0, -3D / 32D, 0);
+                    }
                 }
             } else {
                 GL11.glTranslated(0, -1D / 32D, 0);

@@ -23,7 +23,7 @@ public class ServerSpeedProvider {
     public static void serverTick() {
         serverTimer++;
         if (serverTimer > getSyncInterval()) {
-            AllPackets.CHANNEL.sendToAll(new Packet());
+            AllPackets.channel.sendToAll(new Packet());
             serverTimer = 0;
         }
     }

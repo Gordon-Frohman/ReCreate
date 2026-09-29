@@ -72,7 +72,7 @@ public class SuperGlueEntity extends Entity implements IEntityAdditionalSpawnDat
     public void onBroken(@Nullable Entity breaker) {
         playSound("mob.slime.small", 1.0F, 1.0F);
         if (onValidSurface()) {
-            AllPackets.CHANNEL.sendToAll(
+            AllPackets.channel.sendToAll(
                 new GlueEffectPacket(
                     hangingPositionX,
                     hangingPositionY,

@@ -5,10 +5,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
-import com.mojang.realmsclient.util.Pair;
-
 import su.sergiusonesimus.recreate.ReCreate;
 import su.sergiusonesimus.recreate.foundation.item.ItemDescription.Palette;
+import su.sergiusonesimus.recreate.foundation.utility.Pair;
 
 public enum AllSections {
 

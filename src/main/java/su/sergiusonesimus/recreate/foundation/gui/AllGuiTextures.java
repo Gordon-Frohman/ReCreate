@@ -4,6 +4,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.util.ResourceLocation;
 
+import com.cleanroommc.modularui.drawable.UITexture;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import su.sergiusonesimus.recreate.ReCreate;
@@ -167,6 +169,15 @@ public enum AllGuiTextures implements ScreenElement {
     public void render(int x, int y, Color c) {
         bind();
         UIRenderHelper.drawColoredTexture(c, x, y, startX, startY, width, height);
+    }
+
+    public UITexture asUITexture() {
+        float u1 = startX * 1f / 256f;
+        float u2 = (startX + width) * 1f / 256f;
+        float v1 = startY * 1f / 256f;
+        float v2 = (startY + height) * 1f / 256f;
+
+        return new UITexture(location, u1, v1, u2, v2, null);
     }
 
 }

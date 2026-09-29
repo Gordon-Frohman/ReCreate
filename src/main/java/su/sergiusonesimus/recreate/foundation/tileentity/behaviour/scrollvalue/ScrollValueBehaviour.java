@@ -87,7 +87,7 @@ public class ScrollValueBehaviour extends TileEntityBehaviour {
             return;
         }
 
-        AllPackets.CHANNEL.sendToServer(new ScrollValueUpdatePacket(getPosX(), getPosY(), getPosZ(), scrollableValue));
+        AllPackets.channel.sendToServer(new ScrollValueUpdatePacket(getPosX(), getPosY(), getPosZ(), scrollableValue));
         ticksUntilScrollPacket = -1;
     }
 

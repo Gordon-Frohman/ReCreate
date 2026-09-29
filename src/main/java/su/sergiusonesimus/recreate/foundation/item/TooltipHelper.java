@@ -292,6 +292,7 @@ public class TooltipHelper {
         return tooltip.createTabs();
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     public static String getTooltipTranslationKey(ItemStack stack) {
         Item item = stack.getItem();
         if (tooltipReferrals.containsKey(item)) return tooltipReferrals.get(item)

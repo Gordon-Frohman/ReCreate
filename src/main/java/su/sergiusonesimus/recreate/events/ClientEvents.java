@@ -160,8 +160,9 @@ public class ClientEvents {
                 toolTips.add(new ChatComponentText(itemTooltips.remove(0)));
                 TooltipHelper.getTooltip(stack)
                     .addInformation(toolTips);
+                int i = 0;
                 for (IChatComponent tooltip : toolTips) {
-                    itemTooltips.add(tooltip.getFormattedText());
+                    itemTooltips.add(i++, tooltip.getFormattedText());
                 }
             }
 

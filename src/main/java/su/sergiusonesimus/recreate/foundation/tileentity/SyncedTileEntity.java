@@ -60,7 +60,7 @@ public abstract class SyncedTileEntity extends TileEntity {
     }
 
     public TargetPoint packetTarget() {
-        return new TargetPoint(this.worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 64.0);
+        return new TargetPoint(this.worldObj.provider.dimensionId, xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, 64.0);
     }
 
     public Chunk containedChunk() {
